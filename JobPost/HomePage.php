@@ -3,7 +3,7 @@
 <body>
 <head>
   <title>JobPost</title>
-  <link rel="stylesheet" href="none.css">
+  <link rel="stylesheet" href="tester.css">
 </head>
 
 <h1 align="center">JobPost</h1>
