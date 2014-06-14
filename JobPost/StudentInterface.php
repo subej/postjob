@@ -1,10 +1,22 @@
 <html>
 <body>
+
+<?php
+	$con=mysqli_connect("127.0.0.1","admin","pass", "JobPost", 3306);
+	if(!$con){ 
+		echo "Connection failed"; 
+	}
+	// Check connection
+	if (mysqli_connect_errno()) {
+		echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+?>
+
 <head>
   <title>JobPost</title>
   <link rel="stylesheet" href="tester.css">
     <script type="text/javascript">
-
+    
       function activateTab(pageId) {
           var tabCtrl = document.getElementById('tabCtrl');
           var pageToActivate = document.getElementById(pageId);
@@ -15,19 +27,26 @@
               }
           }
       }
+      
+      function showPort(x) {
+	   		document.getElementById(x).style.display = "block";
+	   		if (x != 'profileDiv') {
+	   			document.getElementById('profileDiv').style.display = "none";
+	   		}
+	   		if (x != 'postingsDiv') {
+	   			document.getElementById('postingsDiv').style.display = "none";
+	   		}
+	  }
 
     </script>
   </head>
   <body>
     <ul>
       <li>
-        <a href="javascript:activateTab('page1')">Portfolio</a>
+        <input type="button" name="portfolio" value="Profile" onclick="showPort('profileDiv')" />
       </li>
       <li>
-        <a href="javascript:activateTab('page2')">Profile</a>
-      </li>
-      <li>
-        <a href="javascript:activateTab('page3')">Job Postings</a>
+         <input type="button" name="posts" value="Job Postings" onclick="showPort('postingsDiv')" />
       </li>
       <li>
         <a href="javascript:activateTab('page4')">Offers Pedning</a>
@@ -43,5 +62,97 @@
       <div id="page4" style="display: none;">Offers Pedning</div>
       <div id="page5" style="display: none;">Offers Accepted</div>
     </div>
+    
+    	<div id="profileDiv"
+    		style="display:none;"
+    		class="answer_list">
+    			<?php
+				$result = mysqli_query($con,"SELECT * FROM PROFILE_CREATES");
+
+				echo "<table border='1'>
+				<tr>	
+				<th>Student ID</th>
+				<th>Profile ID</th>
+				<th>Profile Date</th>
+				<th>Experience</th>
+				<th>Education</th>
+				</tr>";
+
+				while($row = mysqli_fetch_array($result)) {
+			  		echo "<tr>";	
+			  		echo "<td>" . $row['s_id'] . "</td>";
+  					echo "<td>" . $row['p_id'] . "</td>";
+  					echo "<td>" . $row['p_date'] . "</td>";
+  					echo "<td>" . $row['Experience'] . "</td>";
+  					echo "<td>" . $row['Education'] . "</td>";
+					echo "</tr>";
+				}
+
+				echo "</table>";
+			?>
+		</div>
+		
+    	<div id="postingsDiv"
+    		style="display:none;"
+    		class="answer_list">
+    			<?php
+				$result = mysqli_query($con,"SELECT * FROM JOB_POSTING");
+
+				echo "<table border='1'>
+				<tr>	
+				<th>Job ID</th>
+				<th>Contract ID</th>
+				<th>Company ID</th>
+				<th>Position</th>
+				<th>Date Posted</th>
+				</tr>";
+
+				while($row = mysqli_fetch_array($result)) {
+			  		echo "<tr>";	
+			  		echo "<td>" . $row['j_id'] . "</td>";
+  					echo "<td>" . $row['c_id'] . "</td>";
+  					echo "<td>" . $row['co_id'] . "</td>";
+  					echo "<td>" . $row['Position'] . "</td>";
+  					echo "<td>" . $row['DatePosted'] . "</td>";
+					echo "</tr>";
+				}
+
+				echo "</table>";
+			?>
+		</div>
+		
+ 	<div id="postingsDiv"
+    		style="display:none;"
+    		class="answer_list">
+    			<?php
+				$result = mysqli_query($con,"SELECT * FROM JOB_POSTING");
+
+				echo "<table border='1'>
+				<tr>	
+				<th>Job ID</th>
+				<th>Contract ID</th>
+				<th>Company ID</th>
+				<th>Position</th>
+				<th>Date Posted</th>
+				</tr>";
+
+				while($row = mysqli_fetch_array($result)) {
+			  		echo "<tr>";	
+			  		echo "<td>" . $row['j_id'] . "</td>";
+  					echo "<td>" . $row['c_id'] . "</td>";
+  					echo "<td>" . $row['co_id'] . "</td>";
+  					echo "<td>" . $row['Position'] . "</td>";
+  					echo "<td>" . $row['DatePosted'] . "</td>";
+					echo "</tr>";
+				}
+
+				echo "</table>";
+			?>
+		</div>
+	
+	
+
+	
+	
   </body>
 </html>
