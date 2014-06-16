@@ -11,10 +11,10 @@
 // These variables are extracted from the text boxes each time this page is called 
 if(isset($_POST["username"])){$username = $_POST["username"];}
 if(isset($_POST["password"])){$password = $_POST["password"];}
-$test(isset($_POST["StudentLogin"])) = $_POST["StudentLogin"];
+if(isset($_POST["StudentLogin"])) {$test = $_POST["StudentLogin"];}
 
 // Connect to database: You have to enter your own password and databasename
-$con=mysqli_connect("localhost","root","Compouter25624!","cpsc304");
+$con=mysqli_connect("127.0.0.1","admin","pass", "JobPost", 3306);
 
 //Query for username and password entered
 if(isset($_POST["username"])){$result2 = mysqli_query($con, "SELECT Username, Password FROM COMPANY WHERE Username='$username' AND Password='$password';");
@@ -38,11 +38,12 @@ $unamepasswordmatch = 1;
 // If username and password not found, load login buttons and text fields
 if($unamepasswordmatch > 0){
 
-if($test == "Login as Employer"){
+if(isset($test) && ($test == "Login as Employer")){
   echo "Please Login:";
 } else{
   echo "You're login information appears to incorrect. Please try again"; 
 }
+
 echo '<form action="EmployerLoginScreen.php" method="post">';
 echo 'Username: <input type="text" name="username"><br>';
 echo 'Password: <input type="password" name="password"><br>';
