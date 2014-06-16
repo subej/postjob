@@ -14,31 +14,7 @@ $password = $_POST["password"];
 $test = $_POST["StudentLogin"];
 
 // Connect to database: You have to enter your own password and databasename
-$con=mysqli_connect("localhost","root","PASSWORD","DATABASE");
-
-// Results from University query
-$result = mysqli_query($con,"SELECT * FROM UNIVERSITY;");
-
-// Results from Student query
-$result3 = mysqli_query($con,"SELECT * FROM STUDENT_STUDIES;");
-
-// This is a tester to make sure that the query code is working
-while($row = mysqli_fetch_array($result)) {
-  echo $row['Name'] . " " . $row['Province'];
-  echo "<br>";
-}
-
-// This generates all usernames and passwords stored in your DB
-while($row = mysqli_fetch_array($result3)) {
-  echo "These are a username and password for testing purposes.";
-  echo "<br>";
-  echo $row['Username'] . " " . $row['Password'];
-  echo "<br>";
-  echo "This is the password you entered: "; 
-  echo "<br>";
-  echo $password;
-  echo "<br>";
-}
+$con=mysqli_connect("localhost","root","Compouter25624!","cpsc304");
 
 // Produces error message if unable to connect to DB
 if (mysqli_connect_errno()) {
@@ -71,10 +47,18 @@ if($test == "Login as Student"){
   echo "You're login information appears to incorrect. Please try again"; 
 }
 echo '<form action="StudentLoginScreen.php" method="post">';
-echo 'Username: <input type="text" name="username"><br>';
-echo 'Password: <input type="password" name="password"><br>';
+echo 'Username:<br> <input type="text" name="username"><br>';
+echo 'Password:<br><input type="password" name="password"><br>';
 echo '<input type="submit" value="Login">';
 echo '</form>';
+echo "<br>";
+echo "This your first time using JobPost?";
+echo "<br>";
+echo '<form action="RegisterStudent.php" method="get">';
+echo '<input type="submit" value="Register">';
+echo '</form>';
+echo '</form>';
+
 }
 
 ?>

@@ -14,36 +14,7 @@ $password = $_POST["password"];
 $test = $_POST["StudentLogin"];
 
 // Connect to database: You have to enter your own password and databasename
-$con=mysqli_connect("localhost","root","PASSWORD","DATABASE");
-
-// Results from University query
-$result = mysqli_query($con,"SELECT * FROM UNIVERSITY;");
-
-// Results from Company query
-$result3 = mysqli_query($con,"SELECT * FROM COMPANY;");
-
-// This is a tester to make sure that the query code is working
-while($row = mysqli_fetch_array($result)) {
-  echo $row['Name'] . " " . $row['Province'];
-  echo "<br>";
-}
-
-// This generates all usernames and passwords stored in your DB
-while($row = mysqli_fetch_array($result3)) {
-  echo "These are a username and password for testing purposes.";
-  echo "<br>";
-  echo $row['Username'] . " " . $row['Password'];
-  echo "<br>";
-  echo "This is the password you entered: "; 
-  echo "<br>";
-  echo $password;
-  echo "<br>";
-}
-
-// Produces error message if unable to connect to DB
-if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-}
+$con=mysqli_connect("localhost","root","Compouter25624!","cpsc304");
 
 //Query for username and password entered
 $result2 = mysqli_query($con, "SELECT Username, Password FROM COMPANY WHERE Username='$username' AND Password='$password';");
@@ -65,7 +36,7 @@ while($row = mysqli_fetch_array($result2)) {
 // If username and password not found, load login buttons and text fields
 if($unamepasswordmatch > 0){
 
-if($test == "Login as Student"){
+if($test == "Login as Employer"){
   echo "Please Login:";
 } else{
   echo "You're login information appears to incorrect. Please try again"; 
@@ -74,6 +45,12 @@ echo '<form action="EmployerLoginScreen.php" method="post">';
 echo 'Username: <input type="text" name="username"><br>';
 echo 'Password: <input type="password" name="password"><br>';
 echo '<input type="submit" value="Login">';
+echo '</form>';
+echo "This your first time using JobPost?";
+echo "<br>";
+echo '<form action="RegisterEmployer.php" method="get">';
+echo '<input type="submit" value="Register">';
+echo '</form>';
 echo '</form>';
 }
 
