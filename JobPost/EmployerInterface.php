@@ -4,6 +4,7 @@
 <!-- YOU WILL NEED TO CHANGE YOUR CONNECTION SETTINGS TO MAKE THIS WORK. -->
 
 <?php
+
 	//Change your connection settings to make this work 
 	$con=mysqli_connect("localhost","root","Compouter25624!", "cpsc304");
 	if(!$con){ 
@@ -13,19 +14,61 @@
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
+
 				if(isset($_POST['username'])){$username = $_POST['username'];}
-				$con = mysqli_connect("localhost","root", "Comouter25624!","cpsc304");
-				$coidresult = mysqli_query($con,"SELECT co_id
-				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
+				$coidresult = mysqli_query($con,"SELECT * FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
+
 				if(!$coidresult){ 
 					echo "I didn't query.";
 					die('Error: ' . mysqli_error($con));
-				}
+				}	
 				$co_id = null;
 				while($row = mysqli_fetch_array($coidresult)){
-					echo $row['co_id'];
 					$co_id = $row['co_id'];
 				}
+	
+	// Due to obstacles from so many queries, the data is stashed in arrays:
+	// Query for company profile
+	$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );	
+	
+	// All queries for job applicants to make appropriate HTML script into one string
+	$candresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major, Experience, Education
+	FROM STUDENT_STUDIES S, APPLIES A, PROFILE_CREATES P WHERE S.s_id = P.s_id AND S.s_id = A.s_id AND P.s_id = A.s_id AND A.co_id = " . $co_id);
+	if(!$candresult){ die('Error: ' . mysqli_error($con)); }
+	$appstring = '';
+	while($row = mysqli_fetch_array($candresult)){
+	 	$appstring.= "<tr>";	
+  		$appstring.= "<td>" . $row['FirstName'] . "</td>";
+  		$appstring.= "<td>" . $row['LastName'] . "</td>";
+		$appstring.= "<td>" . $row['Faculty'] . "</td>";
+		$appstring.= "<td>" . $row['Year'] . "</td>";
+		$appstring.= "<td>" . $row['Major'] . "</td>";
+		$appstring.= "<td>" . $row['Experience'] . "</td>";
+		$appstring.= "<td>" . $row['Education'] . "</td>";
+		$appstring.= "</tr>";
+	}
+
+
+	// All queries for applicants who accepted job offers
+	$oaresult = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
+	//change this to a view that also show content of contract later
+	if(!$oaresult){ 
+		echo "I didn't query applications.";
+		die('Error: ' . mysqli_error($con));
+	}
+	
+	$oastring = '';
+
+	while($row = mysqli_fetch_array($oaresult)) {
+  		$oastring.= "<tr>";	
+  		$oastring.= "<td>" . $row['s_id'] . "</td>";
+		$oastring.= "<td>" . $row['FirstName'] . "</td>";
+		$oastring.= "<td>" . $row['LastName'] . "</td>";
+		$oastring.= "<td>" . $row['Faculty'] . "</td>";
+		$oastring.= "<td>" . $row['Year'] . "</td>";
+		$oastring.= "<td>" . $row['Major'] . "</td>";
+		$oastring.= "</tr>";
+	}
 ?>
 
 
@@ -50,25 +93,11 @@
     </script>
   </head>
   <body>
-  <?php 
-  // THIS IS A TEST
-  if(isset($_POST['username'])){
-    $TEST = $_POST['username'];
-	echo $TEST;
-	} else{
-	  echo "I did not get a post request";
-	}
-  ?>
     <ul>
       <li>
         <a href="javascript:activateTab('CompanyProfile')">
-	<input type="button" name="newPost" value="Company Profile" />
+	<input type="button" name="newPost" value="CompanyProfile" />
 	</a>
-      </li>
-      <li>
-	 <a href="javascript:activateTab('CreateNewJobPost')">
-         <input type="button" name="newPost" value="Create New Job Post"  />
-	 </a>
       </li>
       <li>
 	<a href="javascript:activateTab('Candidates')">
@@ -77,12 +106,17 @@
       </li>
       <li>
 	<a href="javascript:activateTab('OffersExtended')">
-	<input type="button" name="newPost" value="Offers Extended" />
+	<input type="button" name="newPost" value="OffersExtended" />
         </a>
       </li>
       <li>
         <a href="javascript:activateTab('OffersAccepted')">
-	<input type="button" name="Offers Accepted" value="Offers Accepted" />
+	<input type="button" name="OffersAccepted" value="OffersAccepted" />
+	</a>
+      </li>
+      <li>
+        <a href="javascript:activateTab('createJob')">
+	<input type="button" name="OffersAccepted" value="Create a new Job Post" />
 	</a>
       </li>
     </ul>
@@ -90,11 +124,10 @@
       <div id="CompanyProfile" style="display: block;"
 	class="answer_list">
 	<?php 
+	echo "<p>" . $username . "'s Profile</p>";
 	if(isset($_POST['username'])){$username = $_POST['username'];}
 
-					$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );
-
-					echo "<table border='1'>
+				echo "<table border='1'>
 				<tr>	
 				<th>JOBID</th>
 				<th>CONTRACT-ID</th>
@@ -117,26 +150,27 @@
 	
 	</div>
 	
-      <div id="CreateNewJobPost" style="display: none;">Your Postings</div>
-      <div id="Candidates" style="display:none;">
-	<?php
-		$candresult = mysqli_query($con,"SELECT *
-		FROM STUDENT_STUDIES S, APPLIES A, PROFILE_CREATES P WHERE S.s_id = P.s_id AND S.s_id = A.s_id AND P.s_id = A.s_id AND A.co_id = " . $co_id);
-		if(!$candresult){ die('Error: ' . mysqli_error($con)); }
-		while($row = mysqli_fetch_array($candresult)){
-			echo $row['s_id'];
-		}		
+      <div id="CreateNewJobPost" style="display: none;">Your Postings </div>
+      <div id="Candidates" style="display:none;">Posting Candidates
+	<?php			
+		echo "<table border='1'>
+				<tr>	
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Faculty</th>
+				<th>Year</th>	
+				<th>Major</th>
+				<th>Experience</th>
+				<th>Education</th>
+			</tr>";
+		echo $appstring;
+		echo "</table>";
 	?>
       </div>
       <div id="OffersExtended" style="display: none;">Offers Pedning</div>
-      <div id="OffersAccepted" class="answer_list" style="display: none;">
-    			<?php
-				$result = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
-				//change this to a view that also show content of contract later
-				if(!$result){ 
-					echo "I didn't query applications.";
-					die('Error: ' . mysqli_error($con));
-				}
+      <div id="OffersAccepted" style="display: none;">
+      <?php
+
 				echo "<table border='1'>
 				<tr>	
 				<th>Student ID</th>
@@ -147,23 +181,11 @@
 				<th>Major</th>
 				
 				</tr>";
-
-				while($row = mysqli_fetch_array($result)) {
-			  		echo "<tr>";	
-			  		echo "<td>" . $row['s_id'] . "</td>";
-  					echo "<td>" . $row['FirstName'] . "</td>";
-  					echo "<td>" . $row['LastName'] . "</td>";
-					echo "<td>" . $row['Faculty'] . "</td>";
-					echo "<td>" . $row['Year'] . "</td>";
-					echo "<td>" . $row['Major'] . "</td>";
-					echo "</tr>";
-				}
+				echo $oastring;
 
 				echo "</table>";
 			?>
-		</div>
-    </div>
-    
+		</div>    
     <div id ="createJob" style="display: none;"> 
     				<!--Makes form to fill -->
     				
@@ -174,12 +196,13 @@
 				Please describe the position. </textarea> <br>
     			Contract Length: <br>
     			<input type="radio" name="timeType" value='temporary'>Temporary<br>
-			<input type="radio" name="timeType" value=longTerm>Long Term <br>
+			<input type="radio" name="timeType" value='longTerm'>Long Term <br>
 			Salary: <input type="number" name="salary" placeholder="$" min="1"> <br>
-			<input type="submit"/>
+			<input type="submit" name="username" value="<?php echo $username ?>"/>
 			
     		</form>	
     	</div>
+   </div>
     	
    <?php
     		if (isset($_POST['position'])) {
@@ -189,7 +212,7 @@
     			//get all fields together for Job Post
     			//first need to pull timestamp
 			date_default_timezone_set("Canada/Pacific");
-			$date = date("Y/m/d");
+			$date = date("Y-m-d");
 			
 			//get fields from query
 			$jPosition  = $_POST['position'];
@@ -223,6 +246,12 @@
 			$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
 			$maxContractID = $row[0];
 			$contractID = ($maxContractID + 1);
+			//insert our contract into the db
+			$cAddition = mysqli_query($con, "INSERT INTO CONTRACT VALUES ($contractID, $jSalary, 'open', '$jTimePeriod')");
+			//make sure that insertion worked
+			if (!$cAddition) {
+    				die('Invalid query: ' . mysqli_error($con));	
+			}
 			
 			
 		    //need max job post # to ensure we create a unique one
@@ -239,16 +268,10 @@
 			$maxJobID = $jrow[0];
 			$jobID = ($maxJobID + 1);
 			
-			//insert our contract into the db
-			$cAddition = mysqli_query($con, "INSERT INTO CONTRACT VALUES ($contractID, $jSalary, 'open', '$jTimePeriod')");
-			//make sure that insertion worked
-			if (!$cAddition) {
-    				die('Invalid query: ' . mysqli_error($con));	
-			}
-			
+
 			//insert job into the db
-			$jAddition = mysqli_query($con, "INSERT INTO JOB_POSTING VALUES ($jobID, $contractID, $cID, '$jPosition', $date)");
-			
+			$jAddition = mysqli_query($con, "INSERT INTO JOB_POSTING(j_id, c_id, co_id, Position, DatePosted) VALUES ($jobID, $contractID, $cID, '$jPosition', CURDATE())");
+			echo $contractID;
 			if(!$jAddition) {
 				die('Invalid query: ' .mysqli_error($con));
 			}
