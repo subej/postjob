@@ -84,7 +84,7 @@ Education Char(20),
 
 PRIMARY KEY (s_id, p_id),
 Foreign key (s_id) references STUDENT_STUDIES(s_id)
- ON DELETE CASCADE)
+ ON DELETE CASCADE ON UPDATE CASCADE)
 ;
 
 CREATE TABLE COMPANY
@@ -134,6 +134,8 @@ co_id Integer,
  j_id Integer,
 
 ApplicationN Integer,
+
+Status Char(20),
 
 PRIMARY KEY (s_id, co_id, j_id),
 
