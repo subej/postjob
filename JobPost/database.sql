@@ -190,8 +190,8 @@ insert into JOB_POSTING values (0178,89032,4,'Engineer', '2013-07-15');
 
 
 
-insert into APPLIES values(52151333, 2, 0248, 65234);
-insert into APPLIES values(54657524, 2, 0248, 34234);
-insert into APPLIES values(15125124, 1, 0137, 53143);
-insert into APPLIES values(67845663, 3, 0569, 50192);
-insert into APPLIES values(17889922, 2, 0248, 14234);
+insert into APPLIES values(52151333, 2, 0248, 65234, '-/-');
+insert into APPLIES values(54657524, 2, 0248, 34234,'O/A');
+insert into APPLIES values(15125124, 1, 0137, 53143, 'O/A');
+insert into APPLIES values(67845663, 3, 0569, 50192,'-/-');
+insert into APPLIES values(17889922, 2, 0248, 14234,'-/-');
