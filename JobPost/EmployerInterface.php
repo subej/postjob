@@ -29,8 +29,23 @@
 	
 	// Due to obstacles from so many queries, the data is stashed in arrays:
 	// Query for company profile
+	$compresult = mysqli_query($con,"SELECT * FROM COMPANY C WHERE C.co_id =" . $co_id );	
+	$compstring = '';	
+	while($row = mysqli_fetch_array($compresult)) {
+		$compstring.= "Company Name: <br><b>" . $row['Name'] . "</b><br>";	
+		$compstring.= "Address:<br><b>" .$row['StreetNumber'] . $row['StreetName'] . "<br>" . $row['City'] . $row['Province'] . $row['PostalCode'] . "</b><br>";
+	}
+
+	$currentposts = 'Your job posts: <br>';
 	$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );	
-	
+	while($row = mysqli_fetch_array($result)) {
+		$currentposts.= "<tr>";	
+		$currentposts.= "<td>" . $row['Position'] . "</td>";
+		$currentposts.= "<td>" . $row['DatePosted'] . "</td> . <td><Button>Remove</Button></td>";
+		$currentposts.= "</tr>";
+	}	
+
+
 	// All queries for job applicants to make appropriate HTML script into one string
 	$candresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major, Experience, Education
 	FROM STUDENT_STUDIES S, APPLIES A, PROFILE_CREATES P WHERE S.s_id = P.s_id AND S.s_id = A.s_id AND P.s_id = A.s_id AND A.co_id = " . $co_id);
@@ -41,8 +56,8 @@
   		$appstring.= "<td>" . $row['FirstName'] . "</td>";
   		$appstring.= "<td>" . $row['LastName'] . "</td>";
 		$appstring.= "<td>" . $row['Faculty'] . "</td>";
-		$appstring.= "<td>" . $row['Year'] . "</td>";
 		$appstring.= "<td>" . $row['Major'] . "</td>";
+		$appstring.= "<td>" . $row['Year'] . "</td>";
 		$appstring.= "<td>" . $row['Experience'] . "</td>";
 		$appstring.= "<td>" . $row['Education'] . "</td>";
 		$appstring.= "</tr>";
@@ -50,21 +65,17 @@
 
 
 	// All queries for candidates who companies have extended an offer to
-	$offeredresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major, Experience, Education
+	$offeredresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major
 	FROM STUDENT_STUDIES S, APPLIES A WHERE S.s_id = A.s_id AND A.Status = 'O/-' AND A.co_id = " . $co_id);
-	if(!$candresult){ die('Error: ' . mysqli_error($con)); }
+	if(!$offeredresult){ die('Error: ' . mysqli_error($con)); }
 	$offeredstring = '';
-	$teststring = '';
 	while($row = mysqli_fetch_array($candresult)){
-	 	$offeredstring.= "<tr>";
-		$teststring.= $row['FirstName'];	
+	 	$offeredstring.= "<tr>";	
   		$offeredstring.= "<td>" . $row['FirstName'] . "</td>";
   		$offeredstring.= "<td>" . $row['LastName'] . "</td>";
 		$offeredstring.= "<td>" . $row['Faculty'] . "</td>";
 		$offeredstring.= "<td>" . $row['Year'] . "</td>";
 		$offeredstring.= "<td>" . $row['Major'] . "</td>";
-		$offeredstring.= "<td>" . $row['Experience'] . "</td>";
-		$offeredstring.= "<td>" . $row['Education'] . "</td>";
 		$offeredstring.= "</tr>";
 	}
 
@@ -270,33 +281,20 @@
       <div id="CompanyProfile" style="display: block;"
 	class="answer_list">
 	<?php 
-	echo "<p>" . $username . "'s Profile</p>";
 	if(isset($_POST['username'])){$username = $_POST['username'];}
-
-				echo "<table border='1'>
-				<tr>	
-				<th>JOBID</th>
-				<th>CONTRACT-ID</th>
-				<th>Position</th>
-				<th>DatePosted</th>
-				
-				
-				</tr>";
-
-				while($row = mysqli_fetch_array($result)) {
-			  		echo "<tr>";	
-			  		echo "<td>" . $row['j_id'] . "</td>";
-  					echo "<td>" . $row['c_id'] . "</td>";
-  					echo "<td>" . $row['DatePosted'] . "</td>";					
-					echo "</tr>";
-				}
-
-				echo "</table>";
+	echo "<p>" . $username . "'s Profile</p>";
+	echo $compstring;
+	echo "<table border='1'>
+		<tr>	
+		<th>Position</th>
+		<th>Date Posted</th>
+		</tr>";
+		echo $currentposts;
+		echo "</table>";
 	?>
 	
 	</div>
 	
-      <div id="CreateNewJobPost" style="display: none;">Your Postings </div>
       <div id="Candidates" style="display:none;">Posting Candidates
 	<?php			
 		echo "<table border='1'>
@@ -314,6 +312,21 @@
 	?>
       </div>
       <div id="OffersExtended" style="display: none;">Offers Pedning 
+	<?php
+			echo "<table border='1'>
+				<tr>	
+				<th>Student ID</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Faculty</th>
+				<th>Year</th>	
+				<th>Major</th>
+				</tr>";
+			
+			echo $offeredstring;
+
+			echo "</table>";
+	?>
       </div>
       <div id="OffersAccepted" style="display: none;">
       <?php
