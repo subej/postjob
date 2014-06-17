@@ -13,6 +13,19 @@
 	if (mysqli_connect_errno()) {
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
+				if(isset($_POST['username'])){$username = $_POST['username'];}
+				$con = mysqli_connect("localhost","root", "Comouter25624!","cpsc304");
+				$coidresult = mysqli_query($con,"SELECT co_id
+				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
+				if(!$coidresult){ 
+					echo "I didn't query.";
+					die('Error: ' . mysqli_error($con));
+				}
+				$co_id = null;
+				while($row = mysqli_fetch_array($coidresult)){
+					echo $row['co_id'];
+					$co_id = $row['co_id'];
+				}
 ?>
 
 
@@ -49,27 +62,27 @@
     <ul>
       <li>
         <a href="javascript:activateTab('CompanyProfile')">
-	<input type="button" name="newPost" value="Company Profile" onclick="showJobForm()" />
+	<input type="button" name="newPost" value="Company Profile" />
 	</a>
       </li>
       <li>
 	 <a href="javascript:activateTab('CreateNewJobPost')">
-         <input type="button" name="newPost" value="Create New Job Post" onclick="showJobForm()" />
+         <input type="button" name="newPost" value="Create New Job Post"  />
 	 </a>
       </li>
       <li>
 	<a href="javascript:activateTab('Candidates')">
-	<input type="button" name="newPost" value="Candidates" onclick="showJobForm()" />
+	<input type="button" name="newPost" value="Candidates" />
         </a>
       </li>
       <li>
 	<a href="javascript:activateTab('OffersExtended')">
-	<input type="button" name="newPost" value="Offers Extended" onclick="showJobForm()" />
+	<input type="button" name="newPost" value="Offers Extended" />
         </a>
       </li>
       <li>
         <a href="javascript:activateTab('OffersAccepted')">
-	<input type="button" name="Offers Accepted" value="Offers Accepted" onClick="showOffers()"
+	<input type="button" name="Offers Accepted" value="Offers Accepted" />
 	</a>
       </li>
     </ul>
@@ -79,13 +92,6 @@
 	<?php 
 	if(isset($_POST['username'])){$username = $_POST['username'];}
 
-				$coidresult = mysqli_query($con,"SELECT co_id
-				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
-				$co_id = null;
-				while($row = mysqli_fetch_array($coidresult)){
-
-					$co_id = $row['co_id'];
-					}
 					$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );
 
 					echo "<table border='1'>
@@ -112,30 +118,19 @@
 	</div>
 	
       <div id="CreateNewJobPost" style="display: none;">Your Postings</div>
-      <div id="Candidates" style="display: none;">Posting Candidates</div>
+      <div id="Candidates" style="display:none;">
 	<?php
-		$con = mysqli_connect("localhost","root", "123456","newdb");
+		$candresult = mysqli_query($con,"SELECT *
+		FROM STUDENT_STUDIES S, APPLIES A, PROFILE_CREATES P WHERE S.s_id = P.s_id AND S.s_id = A.s_id AND P.s_id = A.s_id AND A.co_id = " . $co_id);
+		if(!$candresult){ die('Error: ' . mysqli_error($con)); }
+		while($row = mysqli_fetch_array($candresult)){
+			echo $row['s_id'];
+		}		
 	?>
+      </div>
       <div id="OffersExtended" style="display: none;">Offers Pedning</div>
       <div id="OffersAccepted" class="answer_list" style="display: none;">
-			<p> I am a test. Can you see me? </p>
     			<?php
-				//THIS TESTS FOR POST INFO
-				$TEST = $_POST['username'];
-				echo $TEST;
-				if(isset($_POST['username'])){$username = $_POST['username'];}
-				$con = mysqli_connect("localhost","root", "123456","newdb");
-				$coidresult = mysqli_query($con,"SELECT co_id
-				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
-				if(!$coidresult){ 
-					echo "I didn't query.";
-					die('Error: ' . mysqli_error($con));
-				}
-				$co_id = null;
-				while($row = mysqli_fetch_array($coidresult)){
-					echo $row['co_id'];
-					$co_id = $row['co_id'];
-				}
 				$result = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
 				//change this to a view that also show content of contract later
 				if(!$result){ 
