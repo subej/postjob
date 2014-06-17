@@ -2,8 +2,8 @@
 <!--------------------------css--------------------------------->
 <style type="text/css">
 .page1 {
-	background-color: #FC0;
-	border: thick solid #F00;
+background-color: #FC0;
+border: thick solid #F00;
 }
 #mainbar {
 	position:absolute;
@@ -62,6 +62,7 @@
     <script type="text/javascript">
       
       function showPort(x) {
+
 	   		document.getElementById(x).style.display = "block";
 	   		if (x != 'profileDiv') {
 	   			document.getElementById('profileDiv').style.display = "none";
@@ -83,6 +84,7 @@
 	   		}
 	  }
 
+
     </script>
 </head>
   
@@ -90,6 +92,7 @@
 <!------------------------------function setup area--------------------------------------->
 
     <?php
+
 
 	// These variables are extracted from the text boxes each time this page is called 
 	  if(isset($_POST['username']))
@@ -155,11 +158,13 @@
 				}
 		
   		  function getDetails(){//get detail information of a company
+
                 $con=mysqli_connect('localhost','root','', 'jobpost');
                 $coid = $_POST['Detail'];
-	            $result = mysqli_query($con,"SELECT * FROM COMPANY WHERE co_id = '$coid'");
-				
+$result = mysqli_query($con,"SELECT * FROM COMPANY WHERE co_id = '$coid'");
+
                 echo "Information of the company:";
+
 				
 				echo "<table border='1'>
 				<tr bgcolor='#F00' align='center' style='color:white;'>		
@@ -183,9 +188,11 @@
 				}
 				echo "</table>";
 				}
+
 ?>
 
 <!--------------------------function setup area end--------------------------------->
+
 
 
 <!---------------------------Interface area----------------------------------------->
@@ -504,6 +511,7 @@
 								 
 								 echo "<input type = 'hidden' value = 'jobposting' name='Div'>";
 								 sendApplication($sid);
+
                                              }
                                  else if(isset($_REQUEST['Detail']))
                                              {
@@ -511,6 +519,7 @@
 								 echo "<input type = 'hidden' value = 'jobposting' name='Div'>";
                                  getDetails();
                                               }
+
 								 else if (isset($_REQUEST['Cancel']))
 								 			 {
 								
@@ -583,7 +592,7 @@
 <!-------------------------------------------Interface area----------------------------------------------------->	
 	
 
-	
-	
+
 </body>
+
 </html>

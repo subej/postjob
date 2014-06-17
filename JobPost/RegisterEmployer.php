@@ -13,54 +13,72 @@
   $registered = False;
   $totaltrue = 0;
   // Variables from user submission
-  $companyname = $_POST["companyname"];
-  if(strlen($companyname) > 0){
-    $totaltrue++;
+  if(isset($_POST["companyname"])){$companyname = $_POST["companyname"];
+    if(strlen($companyname) > 0){
+      $totaltrue++;
+    }
   }
+  if(isset($_POST["streetnumber"])){
   $streetnumber = $_POST["streetnumber"];
   if($streetnumber > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["streetname"])){
   $streetname = $_POST["streetname"];
   if(strlen($streetname) > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["city"])){
   $city = $_POST["city"];
   if(strlen($city) > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["province"])){
   $province = $_POST["province"];
   if(strlen($province) > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["postalcode"])){
   $postalcode = $_POST["postalcode"];
   if(strlen($postalcode) > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["username"])){
   $username = $_POST["username"];
   if(strlen($username) > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["password1"])){
   $password1 = $_POST["password1"];
   if(strlen($password1) > 0){
     $totaltrue++;
   }
+  }
+  if(isset($_POST["password2"])){
   $password2 = $_POST["password2"];
   if(strlen($password2) > 0){
     $totaltrue++;
+  }
   }
   // No bugs above this line
   // If all 9 fields are filled in, the form was completed
   if($totaltrue == 9){ $registered = True; }
 
   // Variable for which site delievered post request
-  $fromwhere = $_POST["StudentLogin"];
+  if(isset($_POST["StudentLogin"])){$fromwhere = $_POST["StudentLogin"];}
 
   echo "Welcome to JobPost!";
 
   // If the passwords submitted match and the form was completed, create the new user
   // bug contained in statement
-  if($registered && $password1 == $password2){
+  if($registered && isset($_POST['password1'])){
+   if($password1 == $password2){
    $con=mysqli_connect("localhost","root","Compouter25624!","cpsc304");
    
    // Generate a new id for company input by incrementing old highest id value
@@ -87,6 +105,7 @@ VALUES ('$newcoid', '$companyname', '$streetnumber', '$streetname', '$city', '$p
    echo '<form action="EmployerInterface.php" method="post">';
    echo '<input type="submit" value=' . $username . ' name="username">';
    echo '</form>';
+    } 
   } else{
   echo "<br>";
   echo "Please fill out the form below and we'll get you started!";
