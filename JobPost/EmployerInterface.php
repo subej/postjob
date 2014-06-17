@@ -5,7 +5,7 @@
 
 <?php
 	//Change your connection settings to make this work 
-	$con = mysqli_connect("localhost","root", "123456","newdb");
+	$con=mysqli_connect("localhost","root","Compouter25624!", "cpsc304");
 	if(!$con){ 
 		echo "Connection failed"; 
 	}
@@ -23,7 +23,6 @@
   <title>JobPost</title>
   <link rel="stylesheet" href="tester.css">
     <script type="text/javascript">
-t
       function activateTab(pageId) {
           var tabCtrl = document.getElementById('tabCtrl');
           var pageToActivate = document.getElementById(pageId);
@@ -34,22 +33,7 @@ t
               }
           }
       }
-<<<<<<< HEAD
-      function showOffers(){
-	  document.getElementById(OffersAccepted).style.display = "block";
-	  }
-=======
       
-      
-      function showJobForm() {
-		document.getElementById('createJob').style.display = "block";
-      }
-      
-      function showNewJob() {
-      	
-      }
-      
->>>>>>> origin/master
     </script>
   </head>
   <body>
@@ -64,31 +48,42 @@ t
   ?>
     <ul>
       <li>
-         <input type="button" name="YourProfile" value="YourProfile" onclick="showJobPostings()" />
+        <a href="javascript:activateTab('CompanyProfile')">
+	<input type="button" name="newPost" value="Company Profile" onclick="showJobForm()" />
+	</a>
       </li>
       <li>
+	 <a href="javascript:activateTab('CreateNewJobPost')">
          <input type="button" name="newPost" value="Create New Job Post" onclick="showJobForm()" />
+	 </a>
       </li>
       <li>
-        <a href="javascript:activateTab('page3')">Posting Candidates</a>
+	<a href="javascript:activateTab('Candidates')">
+	<input type="button" name="newPost" value="Candidates" onclick="showJobForm()" />
+        </a>
       </li>
       <li>
-        <a href="javascript:activateTab('page4')">Offers Pedning</a>
+	<a href="javascript:activateTab('OffersExtended')">
+	<input type="button" name="newPost" value="Offers Extended" onclick="showJobForm()" />
+        </a>
       </li>
       <li>
-       <input type="button" name="Offers Accepted" value="Offers Accepted" onClick="showOffers()"
+        <a href="javascript:activateTab('OffersAccepted')">
+	<input type="button" name="Offers Accepted" value="Offers Accepted" onClick="showOffers()"
+	</a>
       </li>
     </ul>
-	<div id ="YourProfile"
+    <div id="tabCtrl">
+      <div id="CompanyProfile" style="display: block;"
 	class="answer_list">
 	<?php 
 	if(isset($_POST['username'])){$username = $_POST['username'];}
-				
+
 				$coidresult = mysqli_query($con,"SELECT co_id
 				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
 				$co_id = null;
 				while($row = mysqli_fetch_array($coidresult)){
-					
+
 					$co_id = $row['co_id'];
 					}
 					$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );
@@ -115,20 +110,30 @@ t
 	?>
 	
 	</div>
-	<div id="OffersAccepted"
-    		
-    		class="answer_list">
-			
+	
+      <div id="CreateNewJobPost" style="display: none;">Your Postings</div>
+      <div id="Candidates" style="display: none;">Posting Candidates</div>
+	<?php
+		$con = mysqli_connect("localhost","root", "123456","newdb");
+	?>
+      <div id="OffersExtended" style="display: none;">Offers Pedning</div>
+      <div id="OffersAccepted" class="answer_list" style="display: none;">
+			<p> I am a test. Can you see me? </p>
     			<?php
-				
+				//THIS TESTS FOR POST INFO
+				$TEST = $_POST['username'];
+				echo $TEST;
 				if(isset($_POST['username'])){$username = $_POST['username'];}
 				$con = mysqli_connect("localhost","root", "123456","newdb");
 				$coidresult = mysqli_query($con,"SELECT co_id
 				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
-				
+				if(!$coidresult){ 
+					echo "I didn't query.";
+					die('Error: ' . mysqli_error($con));
+				}
 				$co_id = null;
 				while($row = mysqli_fetch_array($coidresult)){
-					
+					echo $row['co_id'];
 					$co_id = $row['co_id'];
 				}
 				$result = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
@@ -162,12 +167,6 @@ t
 				echo "</table>";
 			?>
 		</div>
-    <div id="tabCtrl">
-      <div id="page1" style="display: block;">Your Profile</div>
-      <div id="page2" style="display: none;">Your Postings</div>
-      <div id="page3" style="display: none;">Posting Candidates</div>
-      <div id="page4" style="display: none;">Offers Pedning</div>
-      <div id="page5" style="display: none;">Offers Accepted</div>
     </div>
     
     <div id ="createJob" style="display: none;"> 
