@@ -33,7 +33,7 @@ Major Char(20),
 PRIMARY KEY (s_id),
 Username Char(10) Unique,
 Password Char(10),
-FOREIGN KEY (u_id) REFERENCES UNIVERSITY(u_id));
+FOREIGN KEY (u_id) REFERENCES UNIVERSITY(u_id) ON DELETE CASCADE);
 
 CREATE TABLE GRAD (s_id Integer,
           Honours Char(20),
