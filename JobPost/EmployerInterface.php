@@ -5,7 +5,7 @@
 
 <?php
 	//Change your connection settings to make this work 
-	$con=mysqli_connect("127.0.0.1","admin","pass", "JobPost", 3306);
+	$con = mysqli_connect("localhost","root", "123456","newdb");
 	if(!$con){ 
 		echo "Connection failed"; 
 	}
@@ -80,37 +80,34 @@ t
       </li>
     </ul>
 	<div id ="YourProfile"
+	class="answer_list">
 	<?php 
 	if(isset($_POST['username'])){$username = $_POST['username'];}
-				$con = mysqli_connect("localhost","root", "123456","newdb");
+				
 				$coidresult = mysqli_query($con,"SELECT co_id
 				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
 				$co_id = null;
 				while($row = mysqli_fetch_array($coidresult)){
-					echo $row['co_id'];
-					$co_id = $row['co_id'];
 					
+					$co_id = $row['co_id'];
+					}
 					$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );
 
 					echo "<table border='1'>
 				<tr>	
-				<th>Student ID</th>
-				<th>First Name</th>
-				<th>Last Name</th>
-				<th>Faculty</th>
-				<th>Year</th>	
-				<th>Major</th>
+				<th>JOBID</th>
+				<th>CONTRACT-ID</th>
+				<th>Position</th>
+				<th>DatePosted</th>
+				
 				
 				</tr>";
 
 				while($row = mysqli_fetch_array($result)) {
 			  		echo "<tr>";	
-			  		echo "<td>" . $row['s_id'] . "</td>";
-  					echo "<td>" . $row['FirstName'] . "</td>";
-  					echo "<td>" . $row['LastName'] . "</td>";
-					echo "<td>" . $row['Faculty'] . "</td>";
-					echo "<td>" . $row['Year'] . "</td>";
-					echo "<td>" . $row['Major'] . "</td>";
+			  		echo "<td>" . $row['j_id'] . "</td>";
+  					echo "<td>" . $row['c_id'] . "</td>";
+  					echo "<td>" . $row['DatePosted'] . "</td>";					
 					echo "</tr>";
 				}
 
@@ -121,7 +118,7 @@ t
 	<div id="OffersAccepted"
     		
     		class="answer_list">
-			<p> I am a test. Can you see me? </p>
+			
     			<?php
 				
 				if(isset($_POST['username'])){$username = $_POST['username'];}
@@ -131,7 +128,7 @@ t
 				
 				$co_id = null;
 				while($row = mysqli_fetch_array($coidresult)){
-					echo $row['co_id'];
+					
 					$co_id = $row['co_id'];
 				}
 				$result = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
