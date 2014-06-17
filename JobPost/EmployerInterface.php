@@ -15,7 +15,7 @@
 		echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	}
 
-				if(isset($_POST['username'])){$username = $_POST['username'];}
+				if(isset($_POST['username'])){$username = $_POST['username'];} else{exit();}
 				$coidresult = mysqli_query($con,"SELECT * FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
 
 				if(!$coidresult){ 
@@ -48,6 +48,25 @@
 		$appstring.= "</tr>";
 	}
 
+
+	// All queries for candidates who companies have extended an offer to
+	$offeredresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major, Experience, Education
+	FROM STUDENT_STUDIES S, APPLIES A WHERE S.s_id = A.s_id AND A.Status = 'O/-' AND A.co_id = " . $co_id);
+	if(!$candresult){ die('Error: ' . mysqli_error($con)); }
+	$offeredstring = '';
+	$teststring = '';
+	while($row = mysqli_fetch_array($candresult)){
+	 	$offeredstring.= "<tr>";
+		$teststring.= $row['FirstName'];	
+  		$offeredstring.= "<td>" . $row['FirstName'] . "</td>";
+  		$offeredstring.= "<td>" . $row['LastName'] . "</td>";
+		$offeredstring.= "<td>" . $row['Faculty'] . "</td>";
+		$offeredstring.= "<td>" . $row['Year'] . "</td>";
+		$offeredstring.= "<td>" . $row['Major'] . "</td>";
+		$offeredstring.= "<td>" . $row['Experience'] . "</td>";
+		$offeredstring.= "<td>" . $row['Education'] . "</td>";
+		$offeredstring.= "</tr>";
+	}
 
 	// All queries for applicants who accepted job offers
 	$oaresult = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
@@ -93,6 +112,133 @@
     </script>
   </head>
   <body>
+
+   <?php
+	// This PHP block handles initial job posting requests
+    		if (isset($_POST['position'])) {
+			$username = $_POST['username'];
+			//get fields from query
+			$jPosition  = $_POST['position'];
+    			$jDesc = $_POST['description'];
+   		 	$jTimePeriod = $_POST['timeType'];
+    			$jSalary = $_POST['salary'];
+						//get company ID
+			$compID = mysqli_query($con, "SELECT co_id FROM COMPANY WHERE Name ='$username'");
+			if (!$compID) {
+				echo 'MySQL ERROR: '. mysql_error();
+				exit;
+			}
+			 
+			 
+			$crow = mysqli_fetch_array($compID, MYSQLI_NUM);
+			$cID = $crow[0];
+
+			
+			//need max contract # to ensure we create a unique one
+    			$sql    = 'SELECT MAX(c_id) FROM CONTRACT';
+			$maxContract = mysqli_query($con, $sql);
+			//check to see if we got our max
+			if (!$maxContract) {
+   				echo "DB Error, could not query the database\n";
+    				echo 'MySQL Error: ' . mysql_error();
+    				exit;
+			}
+			//get our maxcontact id number and increase it by one, this will be our contract num
+			$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
+			$maxContractID = $row[0];
+			$contractID = ($maxContractID + 1);
+			//insert our contract into the db
+			$cAddition = mysqli_query($con, "INSERT INTO CONTRACT VALUES ($contractID, $jSalary, 'open', '$jTimePeriod')");
+			//make sure that insertion worked
+			if (!$cAddition) {
+    				die('Invalid query: ' . mysqli_error($con));	
+			}
+			
+
+	
+			//bring contract we're about to put into the db
+			echo "<br>";
+			echo " <br>Job Title: ". $_POST['position'] . "<br>";
+			echo "Salary: ".$_POST['salary']. "<br>";
+			echo "Status: OPEN <br>"; 
+			echo "Length: ".$_POST['timeType']. "<br>";
+			echo "If this is right, please click the yes button below and your username <br>";
+		        echo '<form action="EmployerInterface.php" method="post">';
+			echo '<input type="radio" name="positionfinal" value="' . $_POST['position'] .'">This is correct<br>';
+			echo '<input type="radio" name="positionfinal" value="reject">This is incorrect <br>';
+   			echo '<input type="submit" value=' . $username . ' name="username">';
+   			echo '</form>';
+
+
+            exit();
+
+		} 
+	?>
+
+	<?php
+		if(isset($_POST['positionfinal'])){
+    			//get all fields together for Job Post
+    			//first need to pull timestamp
+			date_default_timezone_set("Canada/Pacific");
+			$date = date("Y-m-d");
+			if($_POST['positionfinal'] != 'reject'){
+				// This is the job title
+				$jPosition  = $_POST['positionfinal'];
+				//get company ID
+				$compID = mysqli_query($con, "SELECT co_id FROM COMPANY WHERE Username ='$username'");
+				if (!$compID) {
+					echo 'MySQL ERROR: '. mysql_error();
+					exit;
+				} //Fine
+
+				$crow = mysqli_fetch_array($compID, MYSQLI_NUM);
+				$cID = $crow[0];
+				//get contract ID from new post
+				//need max contract # which is the new posting
+    				$sql = 'SELECT MAX(c_id) FROM CONTRACT';
+				$maxContract = mysqli_query($con, $sql);
+				//check to see if we got our max
+				if (!$maxContract) {
+   					echo "DB Error, could not query the database\n";
+    					echo 'MySQL Error: ' . mysql_error();
+    					exit;
+				}// Fine
+
+				//get our maxcontact id number and increase it by one, this will be our contract num
+				$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
+				$maxContractID = $row[0];
+			
+				//need max job post # to ensure we create a unique one
+    				$jsql    = 'SELECT MAX(j_id) FROM JOB_POSTING';
+				$maxJob = mysqli_query($con, $jsql);
+				//check to see if we got our max
+				if (!$maxJob) {
+   					echo "DB Error, could not query the database\n";
+    					echo 'MySQL Error: ' . mysql_error();
+    					exit;
+				} // Fine
+				//get our max job id number and increase it by one, this will be our job num
+				$jrow = mysqli_fetch_array($maxJob, MYSQLI_NUM);
+				$maxJobID = $jrow[0];
+				$jobID = ($maxJobID + 1); //Fine
+				$finalposition = $_POST['positionfinal'];
+				//clean variables for insertion into table
+				$jid = mysqli_real_escape_string($con, $jobID);	
+				$cid = mysqli_real_escape_string($con, $maxContractID);
+				$coid = mysqli_real_escape_string($con, $cID);
+				$pt = mysqli_real_escape_string($con, $jPosition);
+				$d = mysqli_real_escape_string($con, $date);
+				//insert job into the db
+				$jAddition = mysqli_query($con, "INSERT INTO JOB_POSTING(j_id, c_id, co_id, Position, DatePosted) VALUES ($jid, $cid, $coid, '$pt', '$d')");
+				echo $contractID;
+				if(!$jAddition) {
+					die('Invalid query: ' .mysqli_error($con));
+				} 
+							 
+			} else{echo "<p> can you see me friend?" . $_POST['finalposition'] . $jobID . $contractID . $cID . $jPosition . "foobar </p>";}
+		} else {echo "no post request";}
+	?>
+
     <ul>
       <li>
         <a href="javascript:activateTab('CompanyProfile')">
@@ -167,7 +313,8 @@
 		echo "</table>";
 	?>
       </div>
-      <div id="OffersExtended" style="display: none;">Offers Pedning</div>
+      <div id="OffersExtended" style="display: none;">Offers Pedning 
+      </div>
       <div id="OffersAccepted" style="display: none;">
       <?php
 
@@ -203,101 +350,6 @@
     		</form>	
     	</div>
    </div>
-    	
-   <?php
-    		if (isset($_POST['position'])) {
-    			
-    			$username = $_POST['username'];
-    		
-    			//get all fields together for Job Post
-    			//first need to pull timestamp
-			date_default_timezone_set("Canada/Pacific");
-			$date = date("Y-m-d");
-			
-			//get fields from query
-			$jPosition  = $_POST['position'];
-    			$jDesc = $_POST['description'];
-   		 	$jTimePeriod = $_POST['timeType'];
-    			$jSalary = $_POST['salary'];
-			
-			//get company ID
-			$compID = mysqli_query($con, "SELECT co_id FROM COMPANY WHERE Name ='$username'");
-			if (!$compID) {
-				echo 'MySQL ERROR: '. mysql_error();
-				exit;
-			}
-			 
-			 
-			$crow = mysqli_fetch_array($compID, MYSQLI_NUM);
-			$cID = $crow[0];
-			
-			
-			//need max contract # to ensure we create a unique one
-    			$sql    = 'SELECT MAX(c_id) FROM CONTRACT';
-			$maxContract = mysqli_query($con, $sql);
-			//check to see if we got our max
-			if (!$maxContract) {
-   				echo "DB Error, could not query the database\n";
-    				echo 'MySQL Error: ' . mysql_error();
-    				exit;
-			}
-			
-			//get our maxcontact id number and increase it by one, this will be our contract num
-			$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
-			$maxContractID = $row[0];
-			$contractID = ($maxContractID + 1);
-			//insert our contract into the db
-			$cAddition = mysqli_query($con, "INSERT INTO CONTRACT VALUES ($contractID, $jSalary, 'open', '$jTimePeriod')");
-			//make sure that insertion worked
-			if (!$cAddition) {
-    				die('Invalid query: ' . mysqli_error($con));	
-			}
-			
-			
-		    //need max job post # to ensure we create a unique one
-    			$jsql    = 'SELECT MAX(j_id) FROM JOB_POSTING';
-			$maxJob = mysqli_query($con, $jsql);
-			//check to see if we got our max
-			if (!$maxJob) {
-   				echo "DB Error, could not query the database\n";
-    				echo 'MySQL Error: ' . mysql_error();
-    				exit;
-			}
-			//get our max job id number and increase it by one, this will be our job num
-			$jrow = mysqli_fetch_array($maxJob, MYSQLI_NUM);
-			$maxJobID = $jrow[0];
-			$jobID = ($maxJobID + 1);
-			
-
-			//insert job into the db
-			$jAddition = mysqli_query($con, "INSERT INTO JOB_POSTING(j_id, c_id, co_id, Position, DatePosted) VALUES ($jobID, $contractID, $cID, '$jPosition', CURDATE())");
-			echo $contractID;
-			if(!$jAddition) {
-				die('Invalid query: ' .mysqli_error($con));
-			}
-    			
-    			//Just print the job that we are about to put into the db
-    			echo "<br>";
-   			echo "Job Post Created: <br>";
-   			echo "<br>";
-   			echo "Job ID: ". $jobID . "<br>";
-   			echo "Contract ID: ". $contractID . "<br>";
-   			echo "Company ID: ".$cID."<br>";
-   			echo "Position Title:  ". $_POST['position']. "<br>";
-            echo "Description: ". $_POST['description']. "<br>";
-            echo "Date Posted: ". $date. "<br>";
-    			
-	
-			//bring contract we're about to put into the db
-			echo "<br>";
-			echo " <br>Contract ID: ". $contractID. "<br>";
-			echo "Contract Salary: ".$_POST['salary']. "<br>";
-			echo "Contract Status: OPEN <br>"; 
-			echo "Contract Length: ".$_POST['timeType']. "<br>";
-
-            exit();
-		} 
-	?>
 	
   </body>
 </html>
