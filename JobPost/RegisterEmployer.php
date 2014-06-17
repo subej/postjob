@@ -77,7 +77,7 @@
 
   // If the passwords submitted match and the form was completed, create the new user
   // bug contained in statement
-  if($registered && isset($_POST['password1']){
+  if($registered && isset($_POST['password1'])){
    if($password1 == $password2){
    $con=mysqli_connect("localhost","root","Compouter25624!","cpsc304");
    
