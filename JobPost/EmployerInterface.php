@@ -64,7 +64,7 @@ t
   ?>
     <ul>
       <li>
-        <a href="javascript:activateTab('page1')">Your Profile</a>
+         <input type="button" name="YourProfile" value="YourProfile" onclick="showJobPostings()" />
       </li>
       <li>
          <input type="button" name="newPost" value="Create New Job Post" onclick="showJobForm()" />
@@ -79,22 +79,56 @@ t
        <input type="button" name="Offers Accepted" value="Offers Accepted" onClick="showOffers()"
       </li>
     </ul>
+	<div id ="YourProfile"
+	<?php 
+	if(isset($_POST['username'])){$username = $_POST['username'];}
+				$con = mysqli_connect("localhost","root", "123456","newdb");
+				$coidresult = mysqli_query($con,"SELECT co_id
+				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
+				$co_id = null;
+				while($row = mysqli_fetch_array($coidresult)){
+					echo $row['co_id'];
+					$co_id = $row['co_id'];
+					
+					$result = mysqli_query($con,"SELECT * FROM JOB_POSTING J WHERE J.co_id =" . $co_id );
+
+					echo "<table border='1'>
+				<tr>	
+				<th>Student ID</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Faculty</th>
+				<th>Year</th>	
+				<th>Major</th>
+				
+				</tr>";
+
+				while($row = mysqli_fetch_array($result)) {
+			  		echo "<tr>";	
+			  		echo "<td>" . $row['s_id'] . "</td>";
+  					echo "<td>" . $row['FirstName'] . "</td>";
+  					echo "<td>" . $row['LastName'] . "</td>";
+					echo "<td>" . $row['Faculty'] . "</td>";
+					echo "<td>" . $row['Year'] . "</td>";
+					echo "<td>" . $row['Major'] . "</td>";
+					echo "</tr>";
+				}
+
+				echo "</table>";
+	?>
+	
+	</div>
 	<div id="OffersAccepted"
     		
     		class="answer_list">
 			<p> I am a test. Can you see me? </p>
     			<?php
-				//THIS TESTS FOR POST INFO
-				$TEST = $_POST['username'];
-				echo $TEST;
+				
 				if(isset($_POST['username'])){$username = $_POST['username'];}
 				$con = mysqli_connect("localhost","root", "123456","newdb");
 				$coidresult = mysqli_query($con,"SELECT co_id
 				FROM COMPANY WHERE COMPANY.Username = '". $username . "'");
-				if(!$coidresult){ 
-					echo "I didn't query.";
-					die('Error: ' . mysqli_error($con));
-				}
+				
 				$co_id = null;
 				while($row = mysqli_fetch_array($coidresult)){
 					echo $row['co_id'];
