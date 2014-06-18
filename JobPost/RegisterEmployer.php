@@ -79,7 +79,7 @@
   // bug contained in statement
   if($registered && isset($_POST['password1'])){
    if($password1 == $password2){
-   $con=mysqli_connect("localhost","root","Compouter25624!","cpsc304");
+   $con=mysqli_connect("127.0.0.1","admin","pass", "JobPost", 3306);
    
    // Generate a new id for company input by incrementing old highest id value
    $newcoid = null; 

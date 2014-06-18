@@ -41,9 +41,7 @@ CREATE TABLE GRAD (s_id Integer,
           foreign key (s_id) references STUDENT_STUDIES(s_id) ON DELETE CASCADE);
 
 CREATE TABLE UGRAD (s_id Integer,
-
           Program Char(20),
-
           PRIMARY KEY (s_id),
 
           foreign key (s_id) references STUDENT_STUDIES(s_id)
