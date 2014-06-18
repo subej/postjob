@@ -168,10 +168,10 @@ INSERT INTO GRAD VALUES(17889944, 'bachelor of math');
 INSERT INTO GRAD VALUES(17889955, 'bachelor of cpsc');
 INSERT INTO GRAD VALUES(17889966, 'bachelor of math');
 
-INSERT INTO UGRAD VALUES(15125124, 'Chemistry'),
-INSERT INTO UGRAD VALUES(52161314, 'cpsc'),
-INSERT INTO UGRAD VALUES(54657524, 'cpsc'),
-INSERT INTO UGRAD VALUES(67845663, 'Econ'),
+INSERT INTO UGRAD VALUES(15125124, 'Chemistry');
+INSERT INTO UGRAD VALUES(52161314, 'cpsc');
+INSERT INTO UGRAD VALUES(54657524, 'cpsc');
+INSERT INTO UGRAD VALUES(67845663, 'Econ');
 INSERT INTO UGRAD VALUES(77889922, 'Math');
 
 
@@ -189,8 +189,8 @@ insert into STUDENT_SIGNS values(67845663,89032,'2014-06-10');
 insert into PROFILE_CREATES values (52151333, 0013, '2012-03-25', 'worked 3 years as TA', 'cpsc student');
 insert into PROFILE_CREATES values (54657524, 0035, '2013-08-17', 'None','cpsc student');
 insert into PROFILE_CREATES values (17889922, 0045, '2014-05-28', 'None', 'Math');
-insert into PROFILE_CREATES values(15125124, 07, 2012-03-25, 'None','Chem');
-insert into PROFILE_CREATES values(67845663, 05, 2012-03-25,'1 yaer coop','Science');
+insert into PROFILE_CREATES values(15125124, 07, '2012-03-25', 'None','Chem');
+insert into PROFILE_CREATES values(67845663, 05, '2012-03-25','1 yaer coop','Science');
 
 insert into COMPANY values(1, 'Wal-Mart Stores', 702, 'Sw 8th St', 'Bentonville', 'AR', '0361', 'WalMart001', 'mwad24232');
 insert into COMPANY values(2, 'Phillips 66 Company', 301, 'Briarpark Dr','Houston', 'TX', '0241', 'PhilliO', '24hrs423');
