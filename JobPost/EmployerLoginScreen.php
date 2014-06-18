@@ -44,17 +44,16 @@ if(isset($test) && ($test == "Login as Employer")){
   echo "You're login information appears to incorrect. Please try again"; 
 }
 
-echo '<form action="EmployerLoginScreen.php" method="post">';
-echo 'Username: <input type="text" name="username"><br>';
-echo 'Password: <input type="password" name="password"><br>';
-echo '<input type="submit" value="Login">';
-echo '</form>';
+echo '<div> <form id="employerlogin" action="EmployerLoginScreen.php" method="post">';
+echo ' <h3> Username: </h3> <input type="text" name="username"><br>';
+echo '<h3> Password: </h3> <input type="password" name="password"><br>';
+echo '<br> <input type="submit" value="Login">';
+echo '</form> </div>';
 echo "This your first time using JobPost?";
 echo "<br>";
-echo '<form action="RegisterEmployer.php" method="get">';
-echo '<input type="submit" value="Register">';
-echo '</form>';
-echo '</form>';
+echo '<div><form id="register" action="RegisterEmployer.php" method="get">';
+echo '<input id="subregis" type="submit" value="Register">';
+echo '</form> </div>';
 }
 
 ?>

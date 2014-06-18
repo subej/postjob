@@ -109,19 +109,19 @@ VALUES ('$newcoid', '$companyname', '$streetnumber', '$streetname', '$city', '$p
   } else{
   echo "<br>";
   echo "Please fill out the form below and we'll get you started!";
-  echo '<form action="RegisterEmployer.php" method="post">';
-  echo 'Company Name: <br><input type="text" name="companyname"><br><br>';
-  echo 'Address<br><br>';
-  echo 'Street Number:<br> <input type="text" name="streetnumber"><br>';
-  echo 'Street Name:<br> <input type="text" name="streetname"><br>';
-  echo 'City:<br> <input type="text" name="city"><br>';
-  echo 'Province:<br> <input type="text" name="province"><br>';
-  echo 'Postal Code:<br> <input type="text" name="postalcode"><br>';
-  echo 'Username:<br> <input type="text" name="username"><br>';
-  echo 'Password:<br> <input type="password" name="password1"><br>';
-  echo 'Re-Enter Password:<br> <input type="password" name="password2"><br>';
+  echo '<div><form id="empform" action="RegisterEmployer.php" method="post">';
+  echo 'Company Name: <br><input id="einput" type="text" name="companyname"><br><br>';
+  echo '<h2> Address </h2> <br><br>';
+  echo 'Street Number:<br> <input id="einput" type="text" name="streetnumber"><br>';
+  echo 'Street Name:<br> <input id="einput" type="text" name="streetname"><br>';
+  echo 'City:<br> <input id="einput" type="text" name="city"><br>';
+  echo 'Province:<br> <input id="einput" type="text" name="province"><br>';
+  echo 'Postal Code:<br> <input id="einput" type="text" name="postalcode"><br>';
+  echo 'Username:<br> <input id="einput" type="text" name="username"><br>';
+  echo 'Password:<br> <input id="einput" type="password" name="password1"><br>';
+  echo 'Re-Enter Password:<br> <input id="einput" type="password" name="password2"><br>';
   echo '<input type="submit" value="Submit Info">';
-  echo '</form>';
+  echo '</form></div>';
   echo "<br>";
   }
 
