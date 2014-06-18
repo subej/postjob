@@ -116,12 +116,12 @@
 		if($_POST['syear'] != 'any' && !$ispreceeded){$queryconstructor.=" s.Year=" . $_POST['syear']; $ispreceeded = True;}
 		if($_POST['smajor'] != 'any' && $ispreceeded){$queryconstructor.=" AND s.Major='" . $_POST['smajor'] . "'"; $ispreceeded = True;}
 		if($_POST['smajor'] != 'any' && !$ispreceeded){$queryconstructor.=" s.Major='" . $_POST['smajor'] . "'"; $ispreceeded = True;}
-		if($_POST['suniversity'] != 'any' && $ispreceeded){$queryconstructor.=" AND u.u_id='" . $_POST['suniversity'] . "' AND ";}
-		if($_POST['suniversity'] != 'any' && !$ispreceeded){$queryconstructor.= " u.u_id='" . $_POST['suniversity'] . "' AND ";}
-		if($_POST['suniversity'] != 'any'){$queryconstructor.= "u.u_id=s.u_id";}
+		if($_POST['suniversity'] != 'any' && $ispreceeded){$queryconstructor.=" AND u.u_id=" . $_POST['suniversity'];}
+		if($_POST['suniversity'] != 'any' && !$ispreceeded){$queryconstructor.= " u.u_id=" . $_POST['suniversity'];}
+		if($_POST['suniversity'] != 'any'){$queryconstructor.= " AND u.u_id=s.u_id";}
 		if($_POST['grad'] == 'graduate'){
-			if(!$ispreceeded){$queryconstructor.= " s.s_id IN (SELECT s_id FROM GRAD)";} else{
-			$queryconstructor.= " AND s.s_id IN (SELECT s_id FROM GRAD)";}
+			if($ispreceeded || isset($_POST['suniversity'])){$queryconstructor.=" AND s.s_id IN (SELECT s_id FROM GRAD)";}
+			else{$queryconstructor.= " s.s_id IN (SELECT s_id FROM GRAD)";}
 			$gradresult = mysqli_query($con, $queryconstructor);
 			//change this to a view that also show content of contract later
 			if(!$gradresult){ 
@@ -133,13 +133,15 @@
 		  		$studentsearch.= $row['FirstName'] . " " . $row['LastName'] . "<br>";
 			}
 			
+			
 		}
 		if($_POST['grad'] == 'undergraduate'){
-			if(!$ispreceeded){$queryconstructor.= " s.s_id NOT IN (SELECT s_id FROM GRAD)";} else{
-			$queryconstructor.= " AND s.s_id NOT IN (SELECT s_id FROM GRAD)";}
+			if($ispreceeded || isset($_POST['suniversity'])){$queryconstructor.=" AND s.s_id NOT IN (SELECT s_id FROM GRAD)";}
+			else{$queryconstructor.= " s.s_id NOT IN (SELECT s_id FROM GRAD)";}
 			$ugradresult = mysqli_query($con,$queryconstructor);
 			//change this to a view that also show content of contract later
 			if(!$ugradresult){ 
+				echo $queryconstructor;
 				echo "I didn't query applications.";
 				die('Error: ' . mysqli_error($con));
 			}
