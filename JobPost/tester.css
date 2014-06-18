@@ -1,9 +1,12 @@
+
 body {
   font-family: Georgia, "Times New Roman",
         Times, serif;
   color: gold;
   background:#FFFFFF; 
+
 }
+
 
 img{
   width:100%;
@@ -44,27 +47,31 @@ li{
 input{
   font-weight:bold;
   font-style:italic;
-  color:gold;
+  color:black;
   font-family: Georgia, "Times New Roman",
         Times, serif;
-  background-color: #008888;
+  background-color: white;
   box-shadow: 5px 5px 5px #888888;
   border: 2px solid;
-  border-radius: 25px;
   
 }
 
 button{
   font-weight:bold;
   font-style:italic;
-  color:gold;
+  color:black;
   font-family: Georgia, "Times New Roman",
         Times, serif;
-  background-color: #008888;
+  background-color: white;
   box-shadow: 5px 5px 5px #888888;
   border: 2px solid;
-  border-radius: 25px;
   
+  
+}
+
+h3 {
+ text-align: center; 
+
 }
 
 
@@ -77,6 +84,108 @@ select{
   background-color: #008888;
   box-shadow: 5px 5px 5px #888888;
   border: 2px solid;
-  border-radius: 25px;
   
 }
+
+table{
+	padding: 10px
+	border-collapse: collapse;
+}
+
+#employerlogin   {
+background: -webkit-linear-gradient(top, white, grey);
+margin:auto;
+position:relative;
+left: -20px;
+width:450px;
+height:250px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+padding:10px;
+border: 1px solid #999;
+border: inset 1px solid #333;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+#register    {
+background: -webkit-linear-gradient(top, white, grey);
+margin:auto;
+position:relative;
+left: -20px;
+width:450px;
+height:40px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+padding:10px;
+border: 1px solid #999;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+#empform {
+background: -webkit-linear-gradient(top, white, grey);
+margin:auto;
+position:relative;
+left: -20px;
+width:450px;
+height:800px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+padding:10px;
+border: 1px solid #999;
+border: inset 1px solid #333;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+input    {
+margin-left: 165px;
+float:center;
+display:block;
+width:120px;
+border: 1px solid #999;
+height: 20px;
+text-align:center;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+#einput {
+width: 200px;
+
+}
+
+
+#subregis {
+margin-top: 10px;
+
+}
+
+
