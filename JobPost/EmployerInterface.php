@@ -26,7 +26,96 @@
 				while($row = mysqli_fetch_array($coidresult)){
 					$co_id = $row['co_id'];
 				}
-	
+
+		if(isset($_POST['delete'])){
+			$jobremoval = mysqli_query($con, "DELETE FROM JOB_POSTING WHERE JOB_POSTING.j_id=" . $_POST['delete']);
+			if(!$jobremoval) {
+			die('Invalid query: ' .mysqli_error($con));
+			}
+		}
+
+
+		if(isset($_POST['positionfinal'])){
+    			//get all fields together for Job Post
+    			//first need to pull timestamp
+			date_default_timezone_set("Canada/Pacific");
+			$date = date("Y-m-d");
+			if($_POST['positionfinal'] != 'reject'){
+				// This is the job title
+				$jPosition  = $_POST['positionfinal'];
+				//get company ID
+				$compID = mysqli_query($con, "SELECT co_id FROM COMPANY WHERE Username ='$username'");
+				if (!$compID) {
+					echo 'MySQL ERROR: '. mysql_error();
+					exit;
+				} //Fine
+
+				$crow = mysqli_fetch_array($compID, MYSQLI_NUM);
+				$cID = $crow[0];
+				//get contract ID from new post
+				//need max contract # which is the new posting
+    				$sql = 'SELECT MAX(c_id) FROM CONTRACT';
+				$maxContract = mysqli_query($con, $sql);
+				//check to see if we got our max
+				if (!$maxContract) {
+   					echo "DB Error, could not query the database\n";
+    					echo 'MySQL Error: ' . mysql_error();
+    					exit;
+				}// Fine
+
+				//get our maxcontact id number and increase it by one, this will be our contract num
+				$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
+				$maxContractID = $row[0];
+			
+				//need max job post # to ensure we create a unique one
+    				$jsql    = 'SELECT MAX(j_id) FROM JOB_POSTING';
+				$maxJob = mysqli_query($con, $jsql);
+				//check to see if we got our max
+				if (!$maxJob) {
+   					echo "DB Error, could not query the database\n";
+    					echo 'MySQL Error: ' . mysql_error();
+    					exit;
+				} // Fine
+				//get our max job id number and increase it by one, this will be our job num
+				$jrow = mysqli_fetch_array($maxJob, MYSQLI_NUM);
+				$maxJobID = $jrow[0];
+				$jobID = ($maxJobID + 1); //Fine
+				$finalposition = $_POST['positionfinal'];
+				//clean variables for insertion into table
+				$jid = mysqli_real_escape_string($con, $jobID);	
+				$cid = mysqli_real_escape_string($con, $maxContractID);
+				$coid = mysqli_real_escape_string($con, $cID);
+				$pt = mysqli_real_escape_string($con, $jPosition);
+				$d = mysqli_real_escape_string($con, $date);
+				//insert job into the db
+				$jAddition = mysqli_query($con, "INSERT INTO JOB_POSTING(j_id, c_id, co_id, Position, DatePosted) VALUES ($jid, $cid, $coid, '$pt', '$d')");
+				echo $contractID;
+				if(!$jAddition) {
+					die('Invalid query: ' .mysqli_error($con));
+				} 
+							 
+			} else {
+				$sql = 'SELECT MAX(c_id) FROM CONTRACT';
+				$maxContract = mysqli_query($con, $sql);
+				//check to see if we got our max
+				if (!$maxContract) {
+   					echo "DB Error, could not query the database\n";
+    					echo 'MySQL Error: ' . mysql_error();
+    					exit;
+				}// Fine
+
+				//get our maxcontact id number and increase it by one, this will be our contract num
+				// remove created contract from database
+				$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
+				$maxContractID = $row[0]; 
+				$cid = mysqli_real_escape_string($con, $maxContractID);
+				$conremoval = mysqli_query($con, "DELETE FROM CONTRACT WHERE CONTRACT.c_id=" . $cid);
+				if(!$conremoval) {
+				die('Invalid query: ' .mysqli_error($con));
+				}
+			}
+		} 
+
 	// Due to obstacles from so many queries, the data is stashed in arrays:
 	// Query for company profile
 	$compresult = mysqli_query($con,"SELECT * FROM COMPANY C WHERE C.co_id =" . $co_id );	
@@ -41,7 +130,7 @@
 	while($row = mysqli_fetch_array($result)) {
 		$currentposts.= "<tr>";	
 		$currentposts.= "<td>" . $row['Position'] . "</td>";
-		$currentposts.= "<td>" . $row['DatePosted'] . "</td> . <td><Button>Remove</Button></td>";
+		$currentposts.= "<td>" . $row['DatePosted'] . "</td><td><input type=radio name=delete value =" . $row['j_id'] . "></td>";
 		$currentposts.= "</tr>";
 	}	
 
@@ -120,7 +209,7 @@
 		if($_POST['suniversity'] != 'any' && !$ispreceeded){$queryconstructor.= " u.u_id=" . $_POST['suniversity'];}
 		if($_POST['suniversity'] != 'any'){$queryconstructor.= " AND u.u_id=s.u_id";}
 		if($_POST['grad'] == 'graduate'){
-			if($ispreceeded || isset($_POST['suniversity'])){$queryconstructor.=" AND s.s_id IN (SELECT s_id FROM GRAD)";}
+			if($ispreceeded || $_POST['suniversity'] != 'any'){$queryconstructor.=" AND s.s_id IN (SELECT s_id FROM GRAD)";}
 			else{$queryconstructor.= " s.s_id IN (SELECT s_id FROM GRAD)";}
 			$gradresult = mysqli_query($con, $queryconstructor);
 			//change this to a view that also show content of contract later
@@ -136,7 +225,7 @@
 			
 		}
 		if($_POST['grad'] == 'undergraduate'){
-			if($ispreceeded || isset($_POST['suniversity'])){$queryconstructor.=" AND s.s_id NOT IN (SELECT s_id FROM GRAD)";}
+			if($ispreceeded || $_POST['suniversity'] != 'any'){$queryconstructor.=" AND s.s_id NOT IN (SELECT s_id FROM GRAD)";}
 			else{$queryconstructor.= " s.s_id NOT IN (SELECT s_id FROM GRAD)";}
 			$ugradresult = mysqli_query($con,$queryconstructor);
 			//change this to a view that also show content of contract later
@@ -235,69 +324,6 @@
 		} 
 	?>
 
-	<?php
-		if(isset($_POST['positionfinal'])){
-    			//get all fields together for Job Post
-    			//first need to pull timestamp
-			date_default_timezone_set("Canada/Pacific");
-			$date = date("Y-m-d");
-			if($_POST['positionfinal'] != 'reject'){
-				// This is the job title
-				$jPosition  = $_POST['positionfinal'];
-				//get company ID
-				$compID = mysqli_query($con, "SELECT co_id FROM COMPANY WHERE Username ='$username'");
-				if (!$compID) {
-					echo 'MySQL ERROR: '. mysql_error();
-					exit;
-				} //Fine
-
-				$crow = mysqli_fetch_array($compID, MYSQLI_NUM);
-				$cID = $crow[0];
-				//get contract ID from new post
-				//need max contract # which is the new posting
-    				$sql = 'SELECT MAX(c_id) FROM CONTRACT';
-				$maxContract = mysqli_query($con, $sql);
-				//check to see if we got our max
-				if (!$maxContract) {
-   					echo "DB Error, could not query the database\n";
-    					echo 'MySQL Error: ' . mysql_error();
-    					exit;
-				}// Fine
-
-				//get our maxcontact id number and increase it by one, this will be our contract num
-				$row = mysqli_fetch_array($maxContract, MYSQLI_NUM);
-				$maxContractID = $row[0];
-			
-				//need max job post # to ensure we create a unique one
-    				$jsql    = 'SELECT MAX(j_id) FROM JOB_POSTING';
-				$maxJob = mysqli_query($con, $jsql);
-				//check to see if we got our max
-				if (!$maxJob) {
-   					echo "DB Error, could not query the database\n";
-    					echo 'MySQL Error: ' . mysql_error();
-    					exit;
-				} // Fine
-				//get our max job id number and increase it by one, this will be our job num
-				$jrow = mysqli_fetch_array($maxJob, MYSQLI_NUM);
-				$maxJobID = $jrow[0];
-				$jobID = ($maxJobID + 1); //Fine
-				$finalposition = $_POST['positionfinal'];
-				//clean variables for insertion into table
-				$jid = mysqli_real_escape_string($con, $jobID);	
-				$cid = mysqli_real_escape_string($con, $maxContractID);
-				$coid = mysqli_real_escape_string($con, $cID);
-				$pt = mysqli_real_escape_string($con, $jPosition);
-				$d = mysqli_real_escape_string($con, $date);
-				//insert job into the db
-				$jAddition = mysqli_query($con, "INSERT INTO JOB_POSTING(j_id, c_id, co_id, Position, DatePosted) VALUES ($jid, $cid, $coid, '$pt', '$d')");
-				echo $contractID;
-				if(!$jAddition) {
-					die('Invalid query: ' .mysqli_error($con));
-				} 
-							 
-			} 
-		} 
-	?>
 
     <ul>
       <li>
@@ -338,13 +364,17 @@
 	if(isset($_POST['username'])){$username = $_POST['username'];}
 	echo "<p>" . $username . "'s Profile</p>";
 	echo $compstring;
+	echo "<form name='remove' action='EmployerInterface.php' method='post'>";  
 	echo "<table border='1'>
 		<tr>	
 		<th>Position</th>
 		<th>Date Posted</th>
+		<th>Delete</th>
 		</tr>";
 		echo $currentposts;
 		echo "</table>";
+	echo "<input type='submit' name='username' value=" . $username . ">";
+	echo "</form>";
 	if(isset($_POST['grad'])){
 		echo 'Student search results: <br>' . $studentsearch;
 	}
