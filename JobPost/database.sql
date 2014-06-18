@@ -157,7 +157,22 @@ insert into STUDENT_STUDIES  values(67845663, 00004, 'Bobby', 'Wane', 'Arts', 3,
 insert into STUDENT_STUDIES  values(77889922, 00001, 'Hasf', 'Esdge', 'Science', 1, 'Math', 'HappyEnd', 'asd23142');
 insert into STUDENT_STUDIES  values(17889922, 00001, 'BROWN', 'JOHN', 'Science', 5, 'Math', 'bjohn', 'asd236989');
 
+insert into STUDENT_STUDIES  values(17889933, 00001, 'KUMMER', 'ANNA', 'Science', 5, 'CPSC', 'KUMMER', 'ANNA');
+insert into STUDENT_STUDIES  values(17889944, 00001, 'MEI', 'LI', 'Science', 5, 'Math', 'APPLE', 'asd');
+insert into STUDENT_STUDIES  values(17889955, 00001, 'MIKE', 'WHITE', 'Science', 5, 'CPSC', 'LEMON', '123456');
+insert into STUDENT_STUDIES  values(17889966, 00001, 'BRANDON', 'SHAW', 'Science', 5, 'Math', 'UBC', '109');
 
+INSERT INTO GRAD VALUES(17889922, 'bachelor of math');
+INSERT INTO GRAD VALUES(17889933, 'bachelor of cpsc');
+INSERT INTO GRAD VALUES(17889944, 'bachelor of math');
+INSERT INTO GRAD VALUES(17889955, 'bachelor of cpsc');
+INSERT INTO GRAD VALUES(17889966, 'bachelor of math');
+
+INSERT INTO UGRAD VALUES(15125124, 'Chemistry'),
+INSERT INTO UGRAD VALUES(52161314, 'cpsc'),
+INSERT INTO UGRAD VALUES(54657524, 'cpsc'),
+INSERT INTO UGRAD VALUES(67845663, 'Econ'),
+INSERT INTO UGRAD VALUES(77889922, 'Math');
 
 
 insert into CONTRACT values(42357, 2500, 'Valid', 'SUMMER OFFER');
