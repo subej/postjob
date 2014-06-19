@@ -134,32 +134,34 @@
 		$currentposts.= "</tr>";
 	}	
 
-
 	// All queries for job applicants to make appropriate HTML script into one string
-	$candresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major, Experience, Education
-	FROM STUDENT_STUDIES S, APPLIES A, PROFILE_CREATES P WHERE S.s_id = P.s_id AND S.s_id = A.s_id AND P.s_id = A.s_id AND A.co_id = " . $co_id);
+	$cappstring= mysqli_real_escape_string($con, "-/-");
+	$candresult = mysqli_query($con,"SELECT * FROM STUDENT_STUDIES S, APPLIES A, PROFILE_CREATES P
+		 WHERE S.s_id = P.s_id AND S.s_id = A.s_id AND P.s_id = A.s_id AND A.Status = '-/-' AND A.co_id = " . $co_id);
 	if(!$candresult){ die('Error: ' . mysqli_error($con)); }
 	$appstring = '';
+
 	while($row = mysqli_fetch_array($candresult)){
-	 	$appstring.= "<tr>";	
+	 	$appstring.= "<tr>";
+  		$appstring.= "<td>" . $row['s_id'] . "</td>";	
   		$appstring.= "<td>" . $row['FirstName'] . "</td>";
   		$appstring.= "<td>" . $row['LastName'] . "</td>";
 		$appstring.= "<td>" . $row['Faculty'] . "</td>";
-		$appstring.= "<td>" . $row['Major'] . "</td>";
 		$appstring.= "<td>" . $row['Year'] . "</td>";
+		$appstring.= "<td>" . $row['Major'] . "</td>";
 		$appstring.= "<td>" . $row['Experience'] . "</td>";
 		$appstring.= "<td>" . $row['Education'] . "</td>";
 		$appstring.= "</tr>";
 	}
-
-
 	// All queries for candidates who companies have extended an offer to
-	$offeredresult = mysqli_query($con,"SELECT FirstName, LastName, Faculty, Year, Major
-	FROM STUDENT_STUDIES S, APPLIES A WHERE S.s_id = A.s_id AND A.Status = 'O/-' AND A.co_id = " . $co_id);
+	$coffstring= mysqli_real_escape_string($con, 'O/-');
+	$offeredresult = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S
+		WHERE S.s_id=A.s_id AND A.Status = 'O/-' AND A.co_id=" . $co_id);
 	if(!$offeredresult){ die('Error: ' . mysqli_error($con)); }
 	$offeredstring = '';
-	while($row = mysqli_fetch_array($candresult)){
-	 	$offeredstring.= "<tr>";	
+	while($row = mysqli_fetch_array($offeredresult)){
+	 	$offeredstring.= "<tr>";
+  		$offeredstring.= "<td>" . $row['s_id'] . "</td>";	
   		$offeredstring.= "<td>" . $row['FirstName'] . "</td>";
   		$offeredstring.= "<td>" . $row['LastName'] . "</td>";
 		$offeredstring.= "<td>" . $row['Faculty'] . "</td>";
@@ -168,8 +170,11 @@
 		$offeredstring.= "</tr>";
 	}
 
+
 	// All queries for applicants who accepted job offers
-	$oaresult = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S WHERE S.s_id = A.s_id AND A.co_id =" . $co_id );
+	$coffastring= mysqli_real_escape_string($con, 'O/O');
+	$oaresult = mysqli_query($con,"SELECT * FROM APPLIES A, STUDENT_STUDIES S
+		WHERE S.s_id = A.s_id AND A.Status = 'O/A' AND A.co_id =" . $co_id );
 	//change this to a view that also show content of contract later
 	if(!$oaresult){ 
 		echo "I didn't query applications.";
@@ -179,7 +184,7 @@
 	$oastring = '';
 
 	while($row = mysqli_fetch_array($oaresult)) {
-  		$oastring.= "<tr>";	
+		$oastring.= "<tr>";	
   		$oastring.= "<td>" . $row['s_id'] . "</td>";
 		$oastring.= "<td>" . $row['FirstName'] . "</td>";
 		$oastring.= "<td>" . $row['LastName'] . "</td>";
@@ -195,22 +200,21 @@
 	if(isset($_POST['grad'])){
 		$queryconstructor = 'SELECT FirstName, LastName';
 		if($_POST['suniversity'] != 'any'){$queryconstructor.= ", Name ";}
-		$queryconstructor.= " FROM STUDENT_STUDIES s ";
-		if($_POST['suniversity'] != 'any'){$queryconstructor.= ", UNIVERSITY u ";}
-		$queryconstructor.= "WHERE";
+		$queryconstructor.= " FROM STUDENT_STUDIES ";
+		if($_POST['suniversity'] != 'any'){$queryconstructor.= ", UNIVERSITY ";}
 		// This boolean keeps track of if a comma is necessarry
 		$ispreceeded = False;
-		if($_POST['sfaculty'] != 'any'){$queryconstructor.= " s.Faculty='" . $_POST['sfaculty'] . "'"; $ispreceeded = True;}
-		if($_POST['syear'] != 'any' && $ispreceeded){$queryconstructor.=" AND s.Year=" . $_POST['syear']; $ispreceeded = True;}
-		if($_POST['syear'] != 'any' && !$ispreceeded){$queryconstructor.=" s.Year=" . $_POST['syear']; $ispreceeded = True;}
-		if($_POST['smajor'] != 'any' && $ispreceeded){$queryconstructor.=" AND s.Major='" . $_POST['smajor'] . "'"; $ispreceeded = True;}
-		if($_POST['smajor'] != 'any' && !$ispreceeded){$queryconstructor.=" s.Major='" . $_POST['smajor'] . "'"; $ispreceeded = True;}
-		if($_POST['suniversity'] != 'any' && $ispreceeded){$queryconstructor.=" AND u.u_id=" . $_POST['suniversity'];}
-		if($_POST['suniversity'] != 'any' && !$ispreceeded){$queryconstructor.= " u.u_id=" . $_POST['suniversity'];}
-		if($_POST['suniversity'] != 'any'){$queryconstructor.= " AND u.u_id=s.u_id";}
+		if($_POST['sfaculty'] != 'any'){$queryconstructor.= "WHERE STUDENT_STUDIES.Faculty='" . $_POST['sfaculty'] . "'"; $ispreceeded = True;}
+		if($_POST['syear'] != 'any' && $ispreceeded){$queryconstructor.=" AND STUDENT_STUDIES.Year=" . $_POST['syear']; $ispreceeded = True;}
+		if($_POST['syear'] != 'any' && !$ispreceeded){$queryconstructor.="WHERE STUDENT_STUDIES.Year=" . $_POST['syear']; $ispreceeded = True;}
+		if($_POST['smajor'] != 'any' && $ispreceeded){$queryconstructor.=" AND STUDENT_STUDIES.Major='" . $_POST['smajor'] . "'"; $ispreceeded = True;}
+		if($_POST['smajor'] != 'any' && !$ispreceeded){$queryconstructor.="WHERE STUDENT_STUDIES.Major='" . $_POST['smajor'] . "'"; $ispreceeded = True;}
+		if($_POST['suniversity'] != 'any' && $ispreceeded){$queryconstructor.=" AND UNIVERSITY.u_id=" . $_POST['suniversity'];}
+		if($_POST['suniversity'] != 'any' && !$ispreceeded){$queryconstructor.= "WHERE UNIVERSITY.u_id=" . $_POST['suniversity'];}
+		if($_POST['suniversity'] != 'any'){$queryconstructor.= " AND UNIVERSITY.u_id=STUDENT_STUDIES.u_id";}
 		if($_POST['grad'] == 'graduate'){
-			if($ispreceeded || $_POST['suniversity'] != 'any'){$queryconstructor.=" AND s.s_id IN (SELECT s_id FROM GRAD)";}
-			else{$queryconstructor.= " s.s_id IN (SELECT s_id FROM GRAD)";}
+			if($ispreceeded || $_POST['suniversity'] != 'any'){$queryconstructor.=" AND STUDENT_STUDIES.s_id IN (SELECT s_id FROM GRAD)";}
+			else{$queryconstructor.= "WHERE STUDENT_STUDIES.s_id IN (SELECT s_id FROM GRAD)";}
 			$gradresult = mysqli_query($con, $queryconstructor);
 			//change this to a view that also show content of contract later
 			if(!$gradresult){ 
@@ -225,8 +229,8 @@
 			
 		}
 		if($_POST['grad'] == 'undergraduate'){
-			if($ispreceeded || $_POST['suniversity'] != 'any'){$queryconstructor.=" AND s.s_id NOT IN (SELECT s_id FROM GRAD)";}
-			else{$queryconstructor.= " s.s_id NOT IN (SELECT s_id FROM GRAD)";}
+			if($ispreceeded || $_POST['suniversity'] != 'any'){$queryconstructor.=" AND STUDENT_STUDIES.s_id NOT IN (SELECT s_id FROM GRAD)";}
+			else{$queryconstructor.= "WHERE STUDENT_STUDIES.s_id NOT IN (SELECT s_id FROM GRAD)";}
 			$ugradresult = mysqli_query($con,$queryconstructor);
 			//change this to a view that also show content of contract later
 			if(!$ugradresult){ 
@@ -238,7 +242,20 @@
 		  		$studentsearch.= $row['FirstName'] . " " . $row['LastName'] . "<br>";
 			}
 		}
-	} 
+		if($_POST['grad'] == 'any'){
+			$anygradresult = mysqli_query($con,$queryconstructor);
+			//change this to a view that also show content of contract later
+			if(!$anygradresult){ 
+				echo $queryconstructor;
+				echo "I didn't query applications.";
+				die('Error: ' . mysqli_error($con));
+			}
+			while($row = mysqli_fetch_array($anygradresult)) {
+		  		$studentsearch.= $row['FirstName'] . " " . $row['LastName'] . "<br>";
+			}
+		}
+
+	}
 
 ?>
 
@@ -386,6 +403,7 @@
 	<?php			
 		echo "<table border='1'>
 				<tr>	
+				<th>Student ID</th>
 				<th>First Name</th>
 				<th>Last Name</th>
 				<th>Faculty</th>
