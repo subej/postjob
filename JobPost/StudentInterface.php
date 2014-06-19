@@ -108,7 +108,8 @@
 	// These variables are extracted from the text boxes each time this page is called 
 	  if(isset($_POST['username']))
        $username = $_POST["username"];
-	   $username = "admin";//for test, delete it later
+	   $username = 'admin';
+
 	  
 	   global $con, $sid;
 	   $con=mysqli_connect('localhost','root','', 'jobpost');
@@ -145,13 +146,10 @@
 		{
 			if(isset($_POST["submitprofile"])){
 				              $pid = $_POST['pid'];
-							  $pid = mysqli_real_escape_string($pid);
 							  $pdate = $_POST['pdate'];
-							  $pdate = mysqli_real_escape_string($pdate);
                               $experience = $_POST['experience'];
-							  $experience = mysqli_real_escape_string($experience);
                               $education = $_POST['education'];
-							  $education = mysqli_real_escape_string($education);
+							  //$education = mysqli_real_escape_string($education);
                               $query = "update PROFILE_CREATES set  Experience = '$experience', Education = '$education', p_date = '$pdate' WHERE s_id = $sid"; 
                               mysqli_query($con,$query);
                                 }
@@ -166,7 +164,7 @@
 							  $query = "UPDATE STUDENT_STUDIES 
 										SET u_id = $university, FirstName = '$firstname', LastName = '$lastname', Faculty = '$faculty', Year = $year, Major = '$major' 
 										WHERE s_id = $sid"; 	
-							 $query = mysqli_real_escape_string($con,$query);									
+							 //$query = mysqli_real_escape_string($con,$query);									
 							  mysqli_query($con,$query);
 			                    }
 								
@@ -176,7 +174,7 @@
 						  $experience = $_POST['experience'];
 						  $education = $_POST['education'];		  
 						  $query = "INSERT into profile_creates (s_id, p_id, p_date, Experience, Education) VALUES ($sid,$pid,'$pdate','$experience','$education')"; 
-						  $query = mysqli_real_escape_string($con,$query);	
+						  //$query = mysqli_real_escape_string($con,$query);	
 						  mysqli_query($con,$query);
                                }
 							   
@@ -243,10 +241,10 @@
 			 echo $cid;
 			 echo '/';
 			 echo $sdate;
-			 $d = mysqli_real_escape_string($con, $sdate);
-			 $query2 = "INSERT into student_signs (s_id,c_id,s_date) VALUES($sid,$cid,'$d')";
+			 //$date= mysqli_real_escape_string($con, $sdate);
+			 $query2 = "INSERT into student_signs ( s_id, c_id, s_date ) VALUES( $sid, $cid,'$sdate' )";
 			 //$query = mysqli_real_escape_string($con,$query);	
-			 $query2 = mysqli_real_escape_string($con,$query2);	
+			 //$query2 = mysqli_real_escape_string($con,$query2);	
 			 mysqli_query($con,$query);
 			 mysqli_query($con,$query2);	 
 		 }
@@ -395,7 +393,8 @@
 			echo '<br>SUPER COOL ACCOUNT?<br>';
 			echo '<br>Yes<input type = "radio" name = "deletecheck" value = "yes">
 			      NO<input type = "radio" name = "deletecheck" value = "no"><br>';
-			echo '<br><button input type = "submit" name = "deletecomfirm" value = "$sid" >Confirm</button><br>';
+			echo '<br><button name = "deleteconfirm" input type = "submit"  value = '.$sid.'>Confirm</button><br>';
+			echo $sid;
 			
 			?>
             
@@ -621,8 +620,8 @@
      <div id = "searchbar">
      <?php
 	 $con=mysqli_connect('localhost','root','', 'jobpost');
-	 $companypost = mysqli_query($con,"SELECT * FROM COMPANY c, JOB_POSTING p WHERE c.co_id = p.co_id;");
-	 $positions = mysqli_query($con,"SELECT Position FROM JOB_POSTING ;");
+	 $companypost = mysqli_query($con,"SELECT DISTINCT c.co_id, c.Name FROM COMPANY c, JOB_POSTING p WHERE c.co_id = p.co_id;");
+	 $positions = mysqli_query($con,"SELECT DISTINCT Position FROM JOB_POSTING ;");
 	 $salaryhigh = mysqli_query($con,"SELECT DISTINCT j_id FROM CONTRACT C, JOB_POSTING p WHERE c.Salary >= 3500 AND c.c_id = p.c_id; ;");
 	 $salarylow = mysqli_query($con, "SELECT DISTINCT j_id FROM CONTRACT C, JOB_POSTING p WHERE c.Salary < 3500 AND c.c_id = p.c_id; ;");
               echo 'Select a company: <br><select name="companyid"><br>';
@@ -643,7 +642,9 @@
 			  echo '<option value= lower>lower than 3500</option>';
 			  echo '<br></select><br>';
 			  echo 'Keyword:<br> <input type="text" name="key" value= ><br>';
-			  echo 'Only to show the latest post:<br> <input type="checkbox" name="latest" value= "latest"><br>';
+			  echo 'Show the latest post of companies with more than three posts:
+			        <br> <input type="checkbox" name="best" value= "best">
+			        (if you select this, other search functions will not work)<br>';
 			  echo "<button input type='submit' value='Search' name='Search' >Search</button>";
 			  $result = mysqli_query($con,"SELECT * FROM JOB_POSTING");
 			  if(isset($_POST['Search'])){
@@ -655,11 +656,21 @@
 						  if(isset($_POST['key']))
 						  $key = $_POST['key'];
 						  $key = mysql_real_escape_string($key);
+				  if(isset($_POST['best'])){
+					  echo 1111;
+					      $result = mysqli_query($con,"SELECT 							j_id,p.c_id,p.co_id,Position,MAX(p.DatePosted) AS DatePosted
+					  							           FROM JOB_POSTING p, Contract c GROUP BY p.co_id 
+														   HAVING p.co_id IN 
+														   (
+																select j.co_id 
+																from JOB_POSTING j 
+																GROUP BY j.co_id 
+																HAVING COUNT(*) > 3)");
+					  
+				  }
 				  
-				  if($salary == 'higher'){
+				   else if($salary == 'higher'){
 					  if($cid == '-' && $position == '-'){
-						  echo $key ;
-						  echo 1 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE c.Salary >=3500 AND p.c_id = c.c_id
@@ -668,8 +679,6 @@
 					  }
 													  
 					 else if($cid != '-' && $position == '-'){
-						 echo $key ;
-						 echo 2 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.Position = '$position' AND c.Salary >=3500 AND p.c_id = c.c_id
@@ -677,8 +686,6 @@
 												      HAVING p.Position like '%{$key}%'");
 					 }
 			        else if($cid == '-' && $position != '-'){
-						echo $key ;
-						echo 3 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.co_id = '$cid' AND c.Salary >=3500 AND p.c_id = c.c_id
@@ -687,8 +694,6 @@
 													  }
 				
 				   else  if($cid == '-' && $position != '-'){
-					   echo $key ;
-					   echo 4 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.co_id = '$cid' AND p.Position = '$position' AND c.Salary >=3500 AND p.c_id = c.c_id
@@ -699,8 +704,6 @@
 			                            }
 			      else if ($salary == 'lower'){
 				      if($cid == '-' && $position == '-'){
-						  echo $key ;
-						  echo 5 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE c.Salary < 3500 AND p.c_id = c.c_id
@@ -709,8 +712,6 @@
 					  }
 													  
 					 else if($cid == '-' && $position != '-'){
-						 echo $key ;
-						 echo 6 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.Position = '$position' AND c.Salary < 3500 AND p.c_id = c.c_id
@@ -718,8 +719,6 @@
 												      HAVING p.Position like '%{$key}%'");
 					 }
 			        else if($cid != '-' && $position == '-'){
-						echo $key ;
-						echo 7 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.co_id = '$cid' AND c.Salary < 3500 AND p.c_id = c.c_id
@@ -728,8 +727,6 @@
 													  }
 				
 				   else  if($cid != '-' && $position != '-'){
-					   echo $key ;
-					   echo 8 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.co_id = '$cid' AND p.Position = '$position' AND c.Salary < 3500 AND p.c_id = c.c_id
@@ -740,8 +737,6 @@
 				 }
 				 else{
 				 if($cid == '-' && $position == '-'){
-					 echo $key ;
-					 echo 9;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.c_id = c.c_id
@@ -750,8 +745,6 @@
 					  }
 													  
 					 else if($cid == '-' && $position != '-'){
-						 echo $key ;
-						 echo 10 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.Position = '$position' AND  p.c_id = c.c_id
@@ -759,8 +752,6 @@
 												      HAVING p.Position like '%{$key}%'");
 					 }
 			        else if($cid != '-' && $position == '-'){
-						echo $key ;
-						echo 11 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.co_id = '$cid' AND p.c_id = c.c_id
@@ -769,8 +760,6 @@
 													  }
 				
 				    else  if($cid != '-' && $position != '-'){
-					   echo $key ;
-					   echo 12 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
 					  							      FROM JOB_POSTING p, Contract c 
 												      WHERE p.co_id = '$cid' AND p.Position = '$position' AND p.c_id = c.c_id
