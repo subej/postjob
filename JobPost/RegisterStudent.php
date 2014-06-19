@@ -98,7 +98,7 @@
 
    // Insert user data into database
    
-   $con=mysqli_connect("127.0.0.1","admin","pass", "JobPost", 3306);
+   $con=mysqli_connect("localhost","root","Compouter25624!", "cpsc304");
    $insertion = mysqli_query($con,"INSERT INTO STUDENT_STUDIES (s_id, u_id, FirstName, LastName, Faculty, Year, Major, Username, Password)
 VALUES ('$studentid', '$universityid', '$firstname', '$lastname', '$faculty', '$year', '$major', '$username', '$password1')");
 
@@ -120,7 +120,7 @@ VALUES ('$studentid', '$universityid', '$firstname', '$lastname', '$faculty', '$
 
   // This will generate the list of Universities for a user to select from
 
-  $con=mysqli_connect("127.0.0.1","admin","pass", "JobPost", 3306);
+  $con=mysqli_connect("localhost","root","Compouter25624!", "cpsc304");
   $universityquery = mysqli_query($con,"SELECT u_id, Name FROM UNIVERSITY;");
   // This will appear if the user is not registered, or not information was entered incorrectly
   echo '<form action="RegisterStudent.php" method="post">';

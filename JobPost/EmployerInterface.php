@@ -332,7 +332,7 @@
 		        echo '<form action="EmployerInterface.php" method="post">';
 			echo '<input type="radio" name="positionfinal" value="' . $_POST['position'] .'">This is correct<br>';
 			echo '<input type="radio" name="positionfinal" value="reject">This is incorrect <br>';
-   			echo '<input type="submit" value=' . $username . ' name="username">';
+   			echo '<button input type="submit" value=' . $username . ' name="username"> Submit! </button>';
    			echo '</form>';
 
 
@@ -390,7 +390,7 @@
 		</tr>";
 		echo $currentposts;
 		echo "</table>";
-	echo "<input type='submit' name='username' value=" . $username . ">";
+	echo "<button input type='submit' name='username' value=" . $username . "> Delete Selecte Posts </button>";
 	echo "</form>";
 	if(isset($_POST['grad'])){
 		echo 'Student search results: <br>' . $studentsearch;
@@ -497,7 +497,7 @@
         echo "</select>";
        ?>
        <br><br>
-       <input type="submit" value='<?php echo $username; ?>' name="username" >
+       <button input type="submit" value='<?php echo $username; ?>' name="username" >Search</button>
       </form>    
     </div>
     <div id="createJob" style="display: none;"> 
@@ -511,7 +511,7 @@
     			<input type="radio" name="timeType" value='temporary'>Temporary<br>
 			<input type="radio" name="timeType" value='longTerm'>Long Term <br>
 			Salary: <input type="number" name="salary" placeholder="$" min="1"> <br>
-			<input type="submit" name="username" value="<?php echo $username ?>"/>
+			<button input type="submit" name="username" value="<?php echo $username ?>"/> Create Job Post </button>
 			
     		</form>	
     	</div>
