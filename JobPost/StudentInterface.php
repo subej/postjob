@@ -1,16 +1,13 @@
 <html>
 <!--------------------------css--------------------------------->
 <style type="text/css">
-.page1 {
-	background-color: #FC0;
-	border: thick solid #F00;
-}
+
 #mainbar {
 	position:absolute;
 	width:auto;
 	height:50px;
 	top: 100px;
-	background-color: #F60;
+    left:0px;
 }
 #profileDiv{
 	position:absolute;
@@ -53,6 +50,19 @@
 	top: 250px;
 }
 
+#deleteaccount{
+	margin-left: 600px;
+	margin-top:700px;	
+}
+
+#makesure{
+	margin-left: 200px;
+	margin-top:200px;
+	width:300px;
+	height:300px;
+	border: thin solid #F00;
+	background-color: #FFF;
+}
 </style>
 <!-----------------------------------------css---------------------------------->
 <body>
@@ -82,6 +92,9 @@
 			if (x != 'editprofile') {
 	   			document.getElementById('editprofile').style.display = "none";
 	   		}
+			if (x != 'makesure') {
+	   			document.getElementById('makesure').style.display = "none";
+	   		}
 	  }
 
     </script>
@@ -95,7 +108,7 @@
 	// These variables are extracted from the text boxes each time this page is called 
 	  if(isset($_POST['username']))
        $username = $_POST["username"];
-	  $username = "admin";//for test, delete it later
+	   $username = "admin";//for test, delete it later
 	  
 	   global $con, $sid;
 	   $con=mysqli_connect('localhost','root','', 'jobpost');
@@ -115,12 +128,86 @@
 	//delete it after finished    
 		echo $username;
 		echo $sid;
+		
+		checkbutton($sid,$con);
+		//checkdiv();
+		
+		
+		function checkdiv(){
+			if(isset($_POST['Div'])){
+				$div = $_POST['Div'];
+				//showPort($div);	
+			}
+			
+		}
+		
+		function checkbutton($sid,$con)
+		{
+			if(isset($_POST["submitprofile"])){
+				              $pid = $_POST['pid'];
+							  $pid = mysqli_real_escape_string($pid);
+							  $pdate = $_POST['pdate'];
+							  $pdate = mysqli_real_escape_string($pdate);
+                              $experience = $_POST['experience'];
+							  $experience = mysqli_real_escape_string($experience);
+                              $education = $_POST['education'];
+							  $education = mysqli_real_escape_string($education);
+                              $query = "update PROFILE_CREATES set  Experience = '$experience', Education = '$education', p_date = '$pdate' WHERE s_id = $sid"; 
+                              mysqli_query($con,$query);
+                                }
+								
+		   if(isset($_POST["submitinfo"])){
+							  $university = $_POST['universityid'];
+							  $firstname = $_POST['firstname'];
+							  $lastname = $_POST['lastname'];
+							  $faculty = $_POST['faculty'];
+							  $year = $_POST['year'];
+							  $major = $_POST['major']; 
+							  $query = "UPDATE STUDENT_STUDIES 
+										SET u_id = $university, FirstName = '$firstname', LastName = '$lastname', Faculty = '$faculty', Year = $year, Major = '$major' 
+										WHERE s_id = $sid"; 	
+							 $query = mysqli_real_escape_string($con,$query);									
+							  mysqli_query($con,$query);
+			                    }
+								
+			if(isset($_POST["makenewprofile"])){
+				          $pid = $_POS['pid'];
+						  $pdate = $_POST['pdate'];
+						  $experience = $_POST['experience'];
+						  $education = $_POST['education'];		  
+						  $query = "INSERT into profile_creates (s_id, p_id, p_date, Experience, Education) VALUES ($sid,$pid,'$pdate','$experience','$education')"; 
+						  $query = mysqli_real_escape_string($con,$query);	
+						  mysqli_query($con,$query);
+                               }
+							   
+			  
+			 if(isset($_POST['Apply']))
+                                             {			 
+								 sendApplication($sid,$con);
+                                             }
+			 if (isset($_POST['Cancel']))
+								 			 {	 
+								 CancelApplication($sid,$con);
+								 			  }
+											  
+			 if(isset($_POST['Accept']))
+                                             {			 
+								 Accept($sid,$con);
+                                             }
+                                 
+			  if (isset($_POST['CancelA']))
+								 			 {
+								 CancelAccept($sid,$con);
+								 			  }
+											  
+											  
+			  
+							   
+		}
 
-  		function sendApplication($sid)
+  		function sendApplication($sid,$con)
 		        {//to apply a posted job
-				$con=mysqli_connect('localhost','root','', 'jobpost');
 				$jid=$_POST["Apply"];
-				unset($_POST['Apply']);
 				$result = mysqli_query($con,"SELECT * FROM JOB_POSTING WHERE j_id = $jid");
 				$row = mysqli_fetch_array($result);
 				$coid = $row['co_id'];
@@ -128,59 +215,64 @@
 				$rowA = mysqli_fetch_array($maxAliNum);
 				$apliN = (int)$rowA['AppliN'] + 1 ;
 				$status = '-/-';
-        
 				if (mysqli_connect_errno()) {
 				echo "Failed to connect to MySQL: " . mysqli_connect_error();
 				}
-				//for test, delete it later---
-				echo $sid;
-				echo $jid;
-				echo $coid;
-				echo $apliN;
+
 				//----------------------------
-				$query = "insert into applies (s_id,co_id,j_id,ApplicationN,Status) VALUES ($sid,$coid,$jid,$apliN,'$status')";
+				$query = "INSERT into applies (s_id,co_id,j_id,ApplicationN,Status) VALUES ($sid,$coid,$jid,$apliN,'$status')";
+				//$query = mysqli_real_escape_string($con,$query);	
 				mysqli_query($con,$query);
 				mysqli_close($con);
-				
 				}
-		 function Accept($sid){
-			 $con=mysqli_connect('localhost','root','', 'jobpost');
+				
+		 function Accept($sid,$con){
 			 $aid = $_POST['Accept'];
 			 $cid ='';
 			 $cquery = "Select c.c_id FROM APPLIES a, JOB_POSTING j, CONTRACT c WHERE a.ApplicationN = $aid AND a.j_id =j.j_id AND j.c_id = c.c_id";
-			 while($row = mysqli_fetch_array($cquery)){
+			 $cresult = mysqli_query($con, $cquery);
+			 while($row = mysqli_fetch_array($cresult)){
 				 $cid = $row['c_id'];
 			 }
+			 
 			 $query = "UPDATE APPLIES
 				            SET Status = 'O/A' WHERE ApplicationN = $aid"; 
 			 date_default_timezone_set('America/Los_Angeles');
-             $sdate = date('Y-m-d', time());
-			 $query2 = "insert into STUDENT_SIGNS (s_id,c_id,s_date) VALUES ($sid,$cid,'$sdate')";
+             $sdate = date('Y-m-d');
+			 echo '/';
+			 echo $cid;
+			 echo '/';
+			 echo $sdate;
+			 $d = mysqli_real_escape_string($con, $sdate);
+			 $query2 = "INSERT into student_signs (s_id,c_id,s_date) VALUES($sid,$cid,'$d')";
+			 //$query = mysqli_real_escape_string($con,$query);	
+			 $query2 = mysqli_real_escape_string($con,$query2);	
 			 mysqli_query($con,$query);
-			 mysqli_query($con,$query2);
-			 
+			 mysqli_query($con,$query2);	 
 		 }
-		 function CancelAccept($sid){
-			  $con=mysqli_connect('localhost','root','', 'jobpost');
+		 
+		 function CancelAccept($sid,$con){
 			 $aid = $_POST['CancelA'];
 			 $cid ='';
 			 $cquery = "Select c.c_id FROM APPLIES a, JOB_POSTING j, CONTRACT c WHERE a.ApplicationN = $aid AND a.j_id =j.j_id AND j.c_id = c.c_id";
-			 while($row = mysqli_fetch_array($cquery)){
+			 $cresult = mysqli_query($con, $cquery);
+			 while($row = mysqli_fetch_array($cresult)){
 				 $cid = $row['c_id'];
 			 }
 			 $query = "UPDATE APPLIES
 				            SET Status = 'O/-' WHERE ApplicationN = $aid"; 
 			 $query2 = "DELETE FROM STUDENT_SIGNS WHERE s_id = $sid AND c_id = $cid";
+			 //$query = mysqli_real_escape_string($con,$query);	
+			 //$query2 = mysqli_real_escape_string($con,$query2);	
 			 mysqli_query($con,$query);
 			 mysqli_query($con,$query2);
 		 }
 		
-		  function CancelApplication($sid)
+		  function CancelApplication($sid,$con)
 		        {//to cancel a posted job
-				$con=mysqli_connect('localhost','root','', 'jobpost');
 				$jid=$_POST['Cancel'];
-				unset($_POST['Cancel']);
 				$query = "DELETE FROM APPLIES WHERE s_id = $sid AND j_id = $jid";
+				$query = mysqli_real_escape_string($con,$query);	
 				mysqli_query($con,$query);
 				mysqli_close($con);
 				}
@@ -292,6 +384,28 @@
 
 
 <!---------------------------Interface area----------------------------------------->
+<div id="makesure"
+    		style="display:none;"
+    		class="answer_list">
+            <form method="post" action="Homepage.php"> 
+            <?php
+			echo '<br>WARNING<br>';
+			echo '<br>ARE YOU SURE <br>';
+			echo '<br>YOU WANNA DELETE YOUR<br>';
+			echo '<br>SUPER COOL ACCOUNT?<br>';
+			echo '<br>Yes<input type = "radio" name = "deletecheck" value = "yes">
+			      NO<input type = "radio" name = "deletecheck" value = "no"><br>';
+			echo '<br><button input type = "submit" name = "deletecomfirm" value = "$sid" >Confirm</button><br>';
+			
+			?>
+            
+            </form>
+</div>
+
+
+
+
+
 <div id="mainbar">
     <ul>
           <li>
@@ -350,27 +464,6 @@
 
 				  
 			  
-			     if(isset($_REQUEST["submitinfo"])){
-				  $university = $_POST['universityid'];
-				  $university = mysql_real_escape_string($university);
-				  $firstname = $_POST['firstname'];
-				  $firstname = mysql_real_escape_string($firstname);
-				  $lastname = $_POST['lastname'];
-				  $lastname = mysql_real_escape_string($lastname);
-			      $faculty = $_POST['faculty'];
-				  $faculty = mysql_real_escape_string($faculty);
-			      $year = $_POST['year'];
-				  $year = mysql_real_escape_string($year);
-			      $major = $_POST['major']; 
-				  $major = mysql_real_escape_string($major);
-
-				  $query = "UPDATE STUDENT_STUDIES 
-				            SET u_id = $university, FirstName = '$firstname', LastName = '$lastname', Faculty = '$faculty', Year = $year, Major = '$major' 
-							WHERE s_id = $sid"; 
-							
-				  mysqli_query($con,$query);
-				  echo "<input type = 'hidden' value = 'profileDiv' name='Div'>";
-			  }
 			  
 		?>
         </form>    
@@ -398,18 +491,13 @@
 						 //echo $pid;
 						 echo "<br>You do not have a profile, please create a new one:";
 						 echo "<br>Student ID: '$sid'<br>";
+						 echo '<input type = "hidden" name = "pid" value = '.$pid.'>';
 						 echo 'Your Experience:<br> <input type="text" name="experience" value ='.$experience.'><br>';
 						 echo 'Your Education:<br> <input type="text" name="education" value ='.$education.'><br>';
-						 echo 'Date:<br> '.$pdate.' <br>';
-						 echo '<input type="submit" value="submitprofile" name = "submitprofile">';
+						 echo 'Date:<br>'.$pdate.'<input type="hidden" name="pdate" value ='.$pdate.'><br>';
+						 echo '<input type="submit" value="makenewprofile" name = "makenewprofile">';
 						 echo "<br>";
-					   if(isset($_REQUEST["submitprofile"])){
-						  $experience = $_POST['experience'];
-						  $education = $_POST['education'];			  
-						  $query = "insert into profile_creates (s_id, p_id, p_date, Experience, Education) VALUES ($sid,$pid,'$pdate','$experience','$education')"; 
-						  mysqli_query($con,$query);
-						  echo "<input type = 'hidden' value = 'profileDiv' name='Div'>";
-                        }
+					  
 				  }
                   else{  
 				  
@@ -423,24 +511,14 @@
                           date_default_timezone_set('America/Los_Angeles');
                           $pdate = date('Y-m-d', time());
                           echo "<br>Student ID: '$sid'<br>";
+						  echo '<input type = "hidden" name = "pid" value = '.$pid.'>';
                           echo 'Your Experience:<br> <input type="text" name="experience" value ='.$experience.'><br>';
                           echo 'Your Education:<br> <input type="text" name="education" value ='.$education.'><br>';
-                          echo 'Date:<br>'.$pdate.'<br>';
+                          echo 'Date:<br>'.$pdate.'<input type="hidden" name="pdate" value ='.$pdate.'><br>';
                           echo '<input type="submit" value="submitprofile" name = "submitprofile">';
                           echo "<br>";
                           
-                          
-                          if(isset($_REQUEST["submitprofile"])){
-                              $experience = $_POST['experience'];
-							  $experience = mysql_real_escape_string($experience);
-                              $education = $_POST['education'];
-							  $education = mysql_real_escape_string($education);
-							  $pdate = mysql_real_escape_string($pdate);
-                              $query = "update PROFILE_CREATES set  Experience = '$experience', Education = '$education', p_date = '$pdate' WHERE s_id = $sid"; 
-                              mysqli_query($con,$query);
-                              echo "<input type = 'hidden' value = 'profileDiv' name='Div'>";
-                                }
-                  }
+                  		  }
                   
             ?>
   </form>
@@ -454,22 +532,18 @@
      class="answer_list">
      
        <form method="post" action="StudentInterface.php">
+       
 <?php
-				$div = '';
-				
-				if(isset($_POST['Div']))
-				$div = $_POST['Div'];
-				
-				//unset($_POST['Div']);
-				 if($div=='profileDiv'){
-					 
-					                                 ?>
+				if(isset($_POST['makenewprofile'])||isset($_POST['submitprofile'])||isset($_POST['submitinfo']))
+				{
+				?>
 		 <script type="text/javascript">
 		       			document.getElementById('profileDiv').style.display = "block"; 
 		      			</script>
-<?php
-					
+				<?php
 			                            }
+					
+			                    
 				$studentinfo = mysqli_query($con,"SELECT * FROM STUDENT_STUDIES WHERE s_id = $sid;");
 				 $uid = '';
 				 $uname = '';
@@ -543,6 +617,7 @@
      style="display:none;"
      class="answer_list">
     <form method="post" action="StudentInterface.php"> 
+    
      <div id = "searchbar">
      <?php
 	 $con=mysqli_connect('localhost','root','', 'jobpost');
@@ -571,15 +646,15 @@
 			  echo 'Only to show the latest post:<br> <input type="checkbox" name="latest" value= "latest"><br>';
 			  echo "<button input type='submit' value='Search' name='Search' >Search</button>";
 			  $result = mysqli_query($con,"SELECT * FROM JOB_POSTING");
-	          if(isset($_REQUEST['Search'])){
-				  echo "<input type = 'hidden' value = 'jobposting' name='Div'>";
-				  $cid = $_POST['companyid'];
-				  $position = $_POST['position'];
-				  $salary = $_POST['salary'];
-				  $key ='' ;
-				  if(isset($_POST['key']))
-				  $key = $_POST['key'];
-				  $key = mysql_real_escape_string($key);
+			  if(isset($_POST['Search'])){
+						  echo "<input type = 'hidden' value = 'jobposting' name='Div'>";
+						  $cid = $_POST['companyid'];
+						  $position = $_POST['position'];
+						  $salary = $_POST['salary'];
+						  $key ='' ;
+						  if(isset($_POST['key']))
+						  $key = $_POST['key'];
+						  $key = mysql_real_escape_string($key);
 				  
 				  if($salary == 'higher'){
 					  if($cid == '-' && $position == '-'){
@@ -693,7 +768,7 @@
 												      HAVING p.Position like '%{$key}%'");
 													  }
 				
-				   else  if($cid != '-' && $position != '-'){
+				    else  if($cid != '-' && $position != '-'){
 					   echo $key ;
 					   echo 12 ;
 				         $result = mysqli_query($con,"SELECT j_id,p.c_id,co_id,Position,DatePosted 
@@ -703,20 +778,17 @@
 												      HAVING p.Position like '%{$key}%'");
 													  }
 				 
-				 }
-				 unset($_POST['Search']);
-				 
-			  }
+				 								}			 
+			  							}
+			  
+
 	 ?>  
      </div>
   
             	<?php
-				$div = '';
-				if(isset($_POST['Div']))
-				$div = $_POST['Div'];
-				//unset($_POST['Div']);
-				 if($div=='jobposting'){
-					 ?>
+				if(isset($_POST['Apply'])||isset($_POST['Cancel'])||isset($_POST['Detail'])||isset($_POST['Search']))
+				{
+				?>
 						<script type="text/javascript">
 		       			document.getElementById('postingsDiv').style.display = "block"; 
 		      			</script>
@@ -747,11 +819,11 @@
 	                $signedAppli = mysqli_query($con, "SELECT * FROM APPLIES WHERE j_id = '$jid' AND s_id = '$sid'");
 
 		            if (mysqli_num_rows($signedAppli) == 0){ 
-		            		echo "<button input type='submit' value='$jid' name='Apply' >Apply</button>";
+		            		echo "<button name='Apply' input type='submit' value='$jid' >Apply</button>";
 							
 		                                        }
 		  			else{
-            				echo "<button input type='submit' value='$jid' name='Cancel' >Cancel</button>";
+            				echo "<button name='Cancel' input type='submit' value='$jid'  >Cancel</button>";
 							
 			  									}						            
                     echo "</center></td>";
@@ -761,25 +833,14 @@
 												}
 
 					echo "</table>";
-				
-				                 if(isset($_REQUEST['Apply']))
-                                             {			 
-								 
-								 echo "<input type = 'hidden' value = 'jobposting' name='Div'>";
-								 sendApplication($sid);
-                                             }
-                                 else if(isset($_REQUEST['Detail']))
-                                             {
-								
+					
+					if(isset($_POST['Detail']))
+                                             {	
 								 echo "<input type = 'hidden' value = 'jobposting' name='Div'>";
                                  getDetails();
                                               }
-								 else if (isset($_REQUEST['Cancel']))
-								 			 {
-								
-								 echo "<input type = 'hidden' value = 'jobposting' name='Div'>";	 
-								 CancelApplication($sid);
-								 			  }
+				
+
 			?>
             </form>
 </div>
@@ -787,57 +848,51 @@
 <div id="offerspending"
      style="display:none;">
                 <form method="post" action="StudentInterface.php"> 
-    			<?php
-				$div = '';
-				
-				if(isset($_POST['Div']))
-				$div = $_POST['Div'];
-				
-				//unset($_POST['Div']);
-				 if($div=='offerspending'){
-					 
-					                                 ?>
-		 <script type="text/javascript">
+            	<?php
+				if(isset($_POST['Accept'])||isset($_POST['CancelA'])||isset($_POST['DetailA']))
+				{
+				?>
+				  <script type="text/javascript">
 		       			document.getElementById('offerspending').style.display = "block"; 
 		      			</script>
-<?php
-					
+				<?php
 			                            }
-				
-				$result = mysqli_query($con,"SELECT a.s_id,j.co_id,j.j_id,a.ApplicationN,a.Status 
+
+				$result = mysqli_query($con,"SELECT a.s_id,j.co_id,j.j_id,c.c_id,a.ApplicationN,a.Status 
 				                             FROM APPLIES a, JOB_POSTING j, CONTRACT c 
-											 WHERE a.s_id = $sid AND a.Status = 'O/-' AND j.j_id = a.j_id AND j.c_id = c.c_id");
+											 WHERE a.s_id = $sid AND a.Status <> '-/-' AND j.j_id = a.j_id AND j.c_id = c.c_id ");
 
 				echo "<table border='1'>
 				<tr bgcolor='#F00' align='center' style='color:white;'>	
 				<th>Student ID</th>
 				<th>Company ID</th>
 				<th>Job ID</th>
+				<th>Contract ID</th>
 				<th>Application Number</th>
 				<th>Status</th>
 				<th></th>
 				<th></th>
 				</tr>";
 				$jid = '';
+				$cid = '';
 				$aid = '';
+				$coid ='';
 
 				while($row = mysqli_fetch_array($result)) {
 			  		echo "<tr>";	
 			  		echo "<td>" . $row['s_id'] . "</td>";
   					echo "<td>" . $row['co_id'] . "</td>";
   					echo "<td>" . $row['j_id'] . "</td>";
+					echo "<td>" . $row['c_id'] . "</td>";
   					echo "<td>" . $row['ApplicationN'] . "</td>";
 					echo "<td>" . $row['Status'] . "</td>";
-					
 				    $jid = $row['j_id'];
+					$cid = $row['c_id'];
 					$aid = $row['ApplicationN'];
-					
-				    $signed = mysqli_query($con, "SELECT * FROM STUDENT_SIGNS WHERE j_id = '$jid' AND s_id = '$sid'");
-
-					
-		                           if (mysqli_num_rows($signedAppli) == 0){ 
+					$coid = $row['co_id'];
+				    $signed = mysqli_query($con, "SELECT * FROM STUDENT_SIGNS WHERE c_id = $cid AND s_id = $sid"); echo sizeof($signed) . "test";
+		            if (mysqli_num_rows($signed) == 0){ 
 		            		        echo "<td class='view_td' width='20%'><center><button input type='submit' value='$aid' name='Accept' >Accept</button>";
-							
 		                                        }
 									else{
 											echo "<td class='view_td' width='20%'><center><button input type='submit' value='$aid' name='CancelA' >Cancel</button>";
@@ -848,62 +903,26 @@
 										 <button name='DetailA' type='submit' value='$coid' >Detail</button></td>";		           
 									echo "</tr>";
 																}
-				
 									echo "</table>";
-				
-				                 if(isset($_REQUEST['Accept']))
-                                             {			 
-								 
-								 echo "<input type = 'hidden' value = 'offerspending' name='Div'>";
-								 Accept($sid);
-                                             }
-                                 else if(isset($_REQUEST['DetailA']))
+					                echo "</tr>";
+							    if(isset($_POST['DetailA']))
                                              {
-								
-								 echo "<input type = 'hidden' value = 'offerspending' name='Div'>";
                                  getDetailsA();
                                               }
-								 else if (isset($_REQUEST['CancelA']))
-								 			 {
-								
-								 echo "<input type = 'hidden' value = 'offerspending' name='Div'>";	 
-								 CancelAccept($sid);
-								 			  }
-					echo "</tr>";
-				
-
-
 			   ?>
                </form>
                
 </div>
         
 
+
 <div id="offersaccepted"
     		style="display:none;"
     		class="answer_list">
             <form method="post" action="StudentInterface.php"> 
-    			<?php
-				
-				$div = '';
-				
-				if(isset($_POST['Div']))
-				$div = $_POST['Div'];
-				
-				//unset($_POST['Div']);
-				 if($div=='offersaccepted'){
-					 
-					                                 ?>
-		 <script type="text/javascript">
-		       			document.getElementById('offersaccepted').style.display = "block"; 
-		      			</script>
+
 <?php
-					
-			                            }
-				
-				
-				
-				
+
 				$result = mysqli_query($con,"SELECT * FROM STUDENT_SIGNS WHERE s_id = '$sid'");
 
 
@@ -926,6 +945,12 @@
 			?>
             </form>
 </div>
+
+<div id="deleteaccount">
+<input type="button" name="deleteAccount" value="deleteaccount" onClick="showPort('makesure')" />
+</div>
+
+
         
       
         
