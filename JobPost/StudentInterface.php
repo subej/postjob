@@ -1,60 +1,8 @@
 <html>
 <!--------------------------css--------------------------------->
-<style type="text/css">
-.page1 {
-	background-color: #FC0;
-	border: thick solid #F00;
-}
-#mainbar {
-	position:absolute;
-	width:auto;
-	height:50px;
-	top: 100px;
-	background-color: #F60;
-}
-#profileDiv{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-	
-}
-#postingsDiv{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
 
-}
-#offerspending{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
+<link rel="stylesheet" media="all" type="text/css" href="tester.css" />
 
-}
-#offersaccepted{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-
-}
-#editinfo{
-		position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-}
-#editprofile{
-		position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-}
-
-</style>
-<!-----------------------------------------css---------------------------------->
 <body>
 
 <head>
@@ -95,10 +43,10 @@
 	// These variables are extracted from the text boxes each time this page is called 
 	  if(isset($_POST['username']))
        $username = $_POST["username"];
-	  $username = "admin";//for test, delete it later
+	$username= "anna";
 	  
 	   global $con, $sid;
-	   $con=mysqli_connect('localhost','root','', 'jobpost');
+	   $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 	   if(!$con){ 
 		echo "Connection failed"; 
 				}
@@ -118,7 +66,7 @@
 
   		function sendApplication($sid)
 		        {//to apply a posted job
-				$con=mysqli_connect('localhost','root','', 'jobpost');
+				$con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 				$jid=$_POST["Apply"];
 				unset($_POST['Apply']);
 				$result = mysqli_query($con,"SELECT * FROM JOB_POSTING WHERE j_id = $jid");
@@ -144,7 +92,7 @@
 				
 				}
 		 function Accept($sid){
-			 $con=mysqli_connect('localhost','root','', 'jobpost');
+			 $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 			 $aid = $_POST['Accept'];
 			 $cid ='';
 			 $cquery = "Select c.c_id FROM APPLIES a, JOB_POSTING j, CONTRACT c WHERE a.ApplicationN = $aid AND a.j_id =j.j_id AND j.c_id = c.c_id";
@@ -161,7 +109,7 @@
 			 
 		 }
 		 function CancelAccept($sid){
-			  $con=mysqli_connect('localhost','root','', 'jobpost');
+			  $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 			 $aid = $_POST['CancelA'];
 			 $cid ='';
 			 $cquery = "Select c.c_id FROM APPLIES a, JOB_POSTING j, CONTRACT c WHERE a.ApplicationN = $aid AND a.j_id =j.j_id AND j.c_id = c.c_id";
@@ -177,7 +125,7 @@
 		
 		  function CancelApplication($sid)
 		        {//to cancel a posted job
-				$con=mysqli_connect('localhost','root','', 'jobpost');
+				$con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 				$jid=$_POST['Cancel'];
 				unset($_POST['Cancel']);
 				$query = "DELETE FROM APPLIES WHERE s_id = $sid AND j_id = $jid";
@@ -186,14 +134,14 @@
 				}
 		
   		  function getDetailsA(){//get detail information of a company
-                $con=mysqli_connect('localhost','root','', 'jobpost');
+                $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
                 $coid = $_POST['DetailA'];
 	            $resultc = mysqli_query($con,"SELECT * FROM COMPANY WHERE co_id = $coid");
 				$resultct = mysqli_query($con,"SELECT c.c_id, Salary, Status, TimePeriod FROM CONTRACT c, JOB_POSTING p WHERE p.co_id = $coid AND p.c_id = c.c_id");
 				
                 echo "Information of the company:";
 				
-				echo "<table border='1'>
+				echo "<table id='companydets' border='1'>
 				<tr bgcolor='#F00' align='center' style='color:white;'>		
 				<th>Name</th>
 				<th>StreetNumber</th>
@@ -237,7 +185,7 @@
 				}
 				
 				function getDetails(){//get detail information of a company
-                $con=mysqli_connect('localhost','root','', 'jobpost');
+                $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
                 $coid = $_POST['Detail'];
 	            $resultc = mysqli_query($con,"SELECT * FROM COMPANY WHERE co_id = $coid");
 				$resultct = mysqli_query($con,"SELECT c.c_id, Salary, Status, TimePeriod FROM CONTRACT c, JOB_POSTING p WHERE p.co_id = $coid AND p.c_id = c.c_id");
@@ -294,18 +242,18 @@
 <!---------------------------Interface area----------------------------------------->
 <div id="mainbar">
     <ul>
-          <li>
-            <input type="button" name="portfolio" value="Profile" onClick="showPort('profileDiv')" />
-          </li>
-          <li>
-             <input type="button" name="posts" value="Job Postings" onClick="showPort('postingsDiv')" />
-          </li>
-          <li>
-            <input type="button" name="posts" value="offerspending" onClick="showPort('offerspending')" />
-          </li>
-          <li>
-            <input type="button" name="posts" value="offersaccepted" onClick="showPort('offersaccepted')" />
-          </li>
+          <tr>
+            <input  id="main" type="button" style="font: bold 23px Arial" name="portfolio" value= "Profile" onClick="showPort('profileDiv')" />
+          </tr>
+          <tr >
+             <input id="main" type="button" style="font: bold 23px Arial" name="posts" value="Job Postings" onClick="showPort('postingsDiv')" />
+          </tr>
+          <tr >
+            <input id="main" type="button" style="font: bold 23px Arial" name="posts" value="Offers Pending" onClick="showPort('offerspending')" />
+          </tr>
+          <tr >
+            <input id="main" type="button" style="font: bold 23px Arial" name="posts" value="Offers Accepted" onClick="showPort('offersaccepted')" />
+          </tr>
           
   </ul>
 </div>
@@ -316,7 +264,7 @@
      
      <form method="post" action="StudentInterface.php">
      <?php
-      		  $con=mysqli_connect('localhost','root','', 'jobpost');
+      		  $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 			  $universityquery = mysqli_query($con,"SELECT u_id, Name FROM UNIVERSITY;");
 			  $studentquery = mysqli_query($con,"SELECT * FROM STUDENT_STUDIES WHERE s_id = '$sid';");
 			  $university = '';
@@ -382,7 +330,7 @@
      
      <form method="post" action="StudentInterface.php">
      <?php
-                  $con=mysqli_connect('localhost','root','', 'jobpost');
+                  $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
                   $profilequery = mysqli_query($con,"SELECT * FROM PROFILE_CREATES WHERE s_id = '$sid';");
                   $pid = '';
                   $pdate = '';
@@ -453,7 +401,7 @@
      style="display:none;"
      class="answer_list">
      
-       <form method="post" action="StudentInterface.php">
+       <form id="prof" method="post" action="StudentInterface.php">
 <?php
 				$div = '';
 				
@@ -493,12 +441,16 @@
 				}
 				
 										
-				echo '<br>Hello,'.$firstname.' '.$lastname.' <br>';
-				echo '<br>Here is your information: <br>';
-				echo '<br>University: '.$uname.'<br>';
-				echo '<br>Faculty: '.$faculty.'<br>';
-				echo '<br>Year: '.$year.'<br>';
-				echo '<br>Major: '.$major.'<br>';
+				echo '<br><h2>Hello,'.$firstname.' '.$lastname.' </h2><br>'; ?>			
+  <input type="button" name="edit" value="Edit Profile" onClick="showPort('editprofile')" /> <br>
+  <input type="button" name="edit" value="Edit Info" onClick="showPort('editinfo')" /> 
+   
+   <?php
+				echo '<br><table>Here is your information: <br>';
+				echo '<br><tr>University: '.$uname.'</tr><br>';
+				echo '<br><tr>Faculty: '.$faculty.'</tr><br>';
+				echo '<br><tr>Year: '.$year.'</tr><br>';
+				echo '<br><tr>Major: '.$major.'</tr></table><br>';
 				echo '<br>You Profile:<br>';
      
      
@@ -525,11 +477,9 @@
 
 				echo "</table>";
 			?>
-            
+      
   </form>
             
-  <input type="button" name="edit" value="editprofile" onClick="showPort('editprofile')" />
-  <input type="button" name="edit" value="editinfo" onClick="showPort('editinfo')" />
 </div>
 		
  
@@ -541,34 +491,35 @@
            
 <div id="postingsDiv"
      style="display:none;"
-     class="answer_list">
-    <form method="post" action="StudentInterface.php"> 
-     <div id = "searchbar">
+     class="answer_list"
+     align="left">
+    <form   id = "searchbar" method="post" action="StudentInterface.php"> 
+     <div>
      <?php
-	 $con=mysqli_connect('localhost','root','', 'jobpost');
+	 $con=mysqli_connect('127.0.0.1','admin','pass', 'JobPost', 3306);
 	 $companypost = mysqli_query($con,"SELECT * FROM COMPANY c, JOB_POSTING p WHERE c.co_id = p.co_id;");
 	 $positions = mysqli_query($con,"SELECT Position FROM JOB_POSTING ;");
 	 $salaryhigh = mysqli_query($con,"SELECT DISTINCT j_id FROM CONTRACT C, JOB_POSTING p WHERE c.Salary >= 3500 AND c.c_id = p.c_id; ;");
 	 $salarylow = mysqli_query($con, "SELECT DISTINCT j_id FROM CONTRACT C, JOB_POSTING p WHERE c.Salary < 3500 AND c.c_id = p.c_id; ;");
-              echo 'Select a company: <br><select name="companyid"><br>';
+              echo '  Select a company: <select name="companyid"> <br>';
 			  echo '<option value= - > - </option>';
 			  while($row = mysqli_fetch_array($companypost)) {
 				echo '<option value=' . $row['co_id'] . '>' . $row['Name'] . '</option>';
 			  }
-			  echo '<br></select><br>';
-			  echo 'Select a position: <br><select name="position"><br>';
+			  echo '</select><br>';
+			  echo 'Select a position: <select name="position"> <br>';
 			  echo '<option value= - > - </option>';
 			  while($row = mysqli_fetch_array($positions)) {
 				echo '<option value=' . $row['Position'] . '>' . $row['Position'] . '</option>';
 			  }
-			  echo '<br></select><br>';
-			  echo 'Salary: <br><select name="salary"><br>';
+			  echo '</select><br>';
+			  echo '      Salary: <br> <select name="salary">';
 			  echo '<option value= - > - </option>';
 			  echo '<option value= higher > higher than 3500 </option>';
 			  echo '<option value= lower>lower than 3500</option>';
-			  echo '<br></select><br>';
-			  echo 'Keyword:<br> <input type="text" name="key" value= ><br>';
-			  echo 'Only to show the latest post:<br> <input type="checkbox" name="latest" value= "latest"><br>';
+			  echo '</select> <br>';
+			  echo '<br><tr>  Keyword: <input id="searchjp" type="text" name="key" value= > </tr> ';
+			  echo 'Only to show the latest post: <input id="searchjpc" type="checkbox" name="latest" value= "latest">';
 			  echo "<button input type='submit' value='Search' name='Search' >Search</button>";
 			  $result = mysqli_query($con,"SELECT * FROM JOB_POSTING");
 	          if(isset($_REQUEST['Search'])){
@@ -723,7 +674,7 @@
 				<?php
 			                            }
 										
-					echo "<table border='1'  height='auto' >
+					echo "<table id='tid' border='1'  height='auto' >
 					<tr bgcolor='#F00' align='center' style='color:white;'>	
 					<th class='view_th' width='5%'>Job ID</th>
 					<th class='view_th' width='5%'>Contract ID</th>
@@ -815,8 +766,6 @@
 				<th>Job ID</th>
 				<th>Application Number</th>
 				<th>Status</th>
-				<th></th>
-				<th></th>
 				</tr>";
 				$jid = '';
 				$aid = '';
