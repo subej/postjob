@@ -61,7 +61,7 @@ CREATE TABLE STUDENT_SIGNS (
 	s_id Integer,
 	c_id Integer UNIQUE,
 	s_date date,
-		PRIMARY KEY (s_id),
+		PRIMARY KEY (s_id,c_id),
 		FOREIGN KEY (c_id) references CONTRACT(c_id));
 
 
