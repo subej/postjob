@@ -345,16 +345,16 @@
 <div id="mainbar">
     <ul>
           <li>
-            <input type="button" name="portfolio" value="Profile" style="font: bold 23px Arial" onClick="showPort('profileDiv')" />
+            <input id="main" type="button" name="portfolio" value="Profile" style="font: bold 23px Arial" onClick="showPort('profileDiv')" />
           </li>
           <li>
-             <input type="button" name="posts" value="Job Postings" style="font: bold 23px Arial" onClick="showPort('postingsDiv')" />
+             <input id="main" type="button" name="posts" value="Job Postings" style="font: bold 23px Arial" onClick="showPort('postingsDiv')" />
           </li>
           <li>
-            <input type="button" name="posts" value="Offers Pending" style="font: bold 23px Arial" onClick="showPort('offerspending')" />
+            <input id="main" type="button" name="posts" value="Offers Pending" style="font: bold 23px Arial" onClick="showPort('offerspending')" />
           </li>
           <li>
-            <input type="button" name="posts" value="Offers Accepted" style="font: bold 23px Arial" onClick="showPort('offersaccepted')" />
+            <input id="main" type="button" name="posts" value="Offers Accepted" style="font: bold 23px Arial" onClick="showPort('offersaccepted')" />
           </li>
           
   </ul>
@@ -849,6 +849,7 @@
             <form method="post" action="StudentInterface.php"> 
 
 <?php
+
 
 				$result = mysqli_query($con,"SELECT * FROM STUDENT_SIGNS WHERE s_id = '$sid'");
 

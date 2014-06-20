@@ -33,7 +33,7 @@ while($row = mysqli_fetch_array($result2)) {
    $unamepasswordmatch = 0;
    echo 'Success! Click the button below to be directed to your home page.';
    echo '<form action="StudentInterface.php" method="post">';
-   echo '<input type="submit" value=' . $username . ' name="username">';
+   echo '<button input type="submit" value=' . $username . ' name="username"> Welcome! </button>';
    echo '</form>';
  }
 }

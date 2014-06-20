@@ -32,16 +32,8 @@ h1 {
         SunSans-Regular, sans-serif;
   font-style:italic; 
   background-color:#880000;
-  text-align:center;
 }
 
-h2 {
-
-text-align:center;
-color: black;
-
-
-}
 form { 
     position:relative;
     top:35%; 
@@ -49,8 +41,7 @@ form {
 }
 
 li{
-    
-    
+    display: inline;
 }
 
 input{
@@ -67,8 +58,11 @@ input{
 
 button{
   font-weight:bold;
+  font-style:italic;
   color:black;
-  background: -webkit-linear-gradient(top, white, grey);
+  font-family: Georgia, "Times New Roman",
+        Times, serif;
+  background-color: white;
   box-shadow: 5px 5px 5px #888888;
   border: 2px solid;
   
@@ -84,10 +78,10 @@ h3 {
 select{
   font-weight:bold;
   font-style:italic;
-  color:black;
+  color:gold;
   font-family: Georgia, "Times New Roman",
         Times, serif;
-  background-color: white;
+  background-color: #white;
   box-shadow: 5px 5px 5px #888888;
   border: 2px solid;
   
@@ -171,13 +165,16 @@ box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
 input    {
-margin-left: 15px;
+margin-left: 165px;
 float:center;
 display:block;
 width:120px;
 border: 1px solid #999;
 height: 20px;
 text-align:center;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
 }
 
 #einput {
@@ -190,111 +187,5 @@ width: 200px;
 margin-top: 10px;
 
 }
-
-tr {
- background-color: silver;
- align-text: center
- color: black;
-
-}
-
-#postingsDiv {
-margin-left: 400px;
-
-}
-    .container {
-        width: 500px;
-        clear: both;
-    }
-    .container input {
-        width: 100%;
-        clear: both;
-    }
-
-
-
-#searchbar {
-
-background: -webkit-linear-gradient(top, white, grey);
-margin:auto;
-margin-right: 900px;
-position:relative;
-left: -20px;
-width:200px;
-height:600px;
-font-family: Tahoma, Geneva, sans-serif;
-font-size: 14px;
-font-style: italic;
-line-height: 24px;
-font-weight: bold;
-color: #09C;
-text-decoration: none;
-padding:10px;
-border: 1px solid #999;
-border: inset 1px solid #333;
--webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
--moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
-
-}
-
-#searchjp {
-text-align: center;
-height: 20px;
-margin-left: 80px;
-
-
-}
-
-#searchjpc {
-text-align: center;
-height: 20px;
-margin-left: 80px;
-border: 0px solid #999;
-width: 50px;
-
-
-}
-
-
-#mainbar {
-float: left;
-
-}
-
-#main {
-height: 80px;
-width: 200px;
-float:center;
-text-align: center;
-}
-
-#prof {
-background: -webkit-linear-gradient(top, white, grey);
-margin:auto;
-margin-left: 330px;
-position:relative;
-left: -20px;
-width:900px;
-height:700px;
-font-family: Tahoma, Geneva, sans-serif;
-font-size: 14px;
-font-style: italic;
-line-height: 24px;
-font-weight: bold;
-color: #09C;
-text-decoration: none;
-padding:10px;
-border: 1px solid #999;
-border: inset 1px solid #333;
-}
-
-#tid {
-margin-left: 300px;
-float: top;
-float: center;
-float: left;
-}
-
 
 
