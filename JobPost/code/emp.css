@@ -1,0 +1,197 @@
+
+body {
+  font-family: Georgia, "Times New Roman",
+        Times, serif;
+  color: #DDBB55;
+
+  background-color:#848484; 
+
+}
+
+h1{
+  color:gold;
+}
+img{
+  width:100%;
+  height:100%;
+  position: fixed;
+  left: 0px;
+  top: 0px;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  z-index: -1;
+}
+
+.loginbuttons{
+
+}
+
+p{
+  color:gold;
+}
+
+h1 {
+  font-family: Helvetica, Geneva, Arial,
+        SunSans-Regular, sans-serif;
+  font-style:italic; 
+  background-color:#880000;
+}
+
+form { 
+    position:relative;
+    top:35%; 
+    left:35%; 
+}
+
+li{
+    display: inline;
+}
+
+input{
+  font-weight:bold;
+  font-style:italic;
+  color:black;
+  font-family: Georgia, "Times New Roman",
+        Times, serif;
+  background-color: white;
+  box-shadow: 5px 5px 5px #888888;
+  border: 2px solid;
+  
+}
+
+button{
+  font-weight:bold;
+  font-style:italic;
+  color:black;
+  font-family: Georgia, "Times New Roman",
+        Times, serif;
+  background-color: white;
+  box-shadow: 5px 5px 5px #888888;
+  border: 2px solid;
+  
+  
+}
+
+h3 {
+ text-align: center; 
+ color:gold;
+}
+
+
+select{
+  font-weight:bold;
+  font-style:italic;
+  color:gold;
+  font-family: Georgia, "Times New Roman",
+        Times, serif;
+  background-color: #white;
+  box-shadow: 5px 5px 5px #888888;
+  border: 2px solid;
+  
+}
+
+table{
+	padding: 10px
+	border-collapse: collapse;
+	color: gold;
+	border-color: #5588AA;
+	background-color:#5500AA;
+}
+
+#employerlogin   {
+background: -webkit-linear-gradient(top, white, grey);
+margin:auto;
+position:relative;
+left: -20px;
+width:450px;
+height:250px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+padding:10px;
+border: 1px solid #999;
+border: inset 1px solid #333;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+#register    {
+background: -webkit-linear-gradient(top, white, grey);
+margin:auto;
+position:relative;
+left: -20px;
+width:450px;
+height:40px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+padding:10px;
+border: 1px solid #999;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+
+}
+
+#empform {
+background: -webkit-linear-gradient(top, white, grey);
+margin:auto;
+position:relative;
+left: -20px;
+width:450px;
+height:800px;
+font-family: Tahoma, Geneva, sans-serif;
+font-size: 14px;
+font-style: italic;
+line-height: 24px;
+font-weight: bold;
+color: #09C;
+text-decoration: none;
+padding:10px;
+border: 1px solid #999;
+border: inset 1px solid #333;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+input    {
+margin-left: 165px;
+float:center;
+display:block;
+width:220px;
+border: 1px solid #999;
+height: 20px;
+text-align:center;
+-webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+-moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);
+}
+
+#einput {
+width: 200px;
+
+}
+
+
+#subregis {
+margin-top: 10px;
+
+}
+
+
