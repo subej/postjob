@@ -1,70 +1,8 @@
 <html>
 <!--------------------------css--------------------------------->
-<style type="text/css">
 
-#mainbar {
-	position:absolute;
-	width:auto;
-	height:50px;
-	top: 100px;
-    left:0px;
-}
-#profileDiv{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-	
-}
-#postingsDiv{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
+<link rel="stylesheet" media="all" type="text/css" href="new.css" />
 
-}
-#offerspending{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-
-}
-#offersaccepted{
-	position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-
-}
-#editinfo{
-		position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-}
-#editprofile{
-		position:absolute;
-	width:800px;
-	height:auto;
-	top: 250px;
-}
-
-#deleteaccount{
-	margin-left: 600px;
-	margin-top:700px;	
-}
-
-#makesure{
-	margin-left: 200px;
-	margin-top:200px;
-	width:300px;
-	height:300px;
-	border: thin solid #F00;
-	background-color: #FFF;
-}
-</style>
-<!-----------------------------------------css---------------------------------->
 <body>
 
 <head>
@@ -92,14 +30,13 @@
 			if (x != 'editprofile') {
 	   			document.getElementById('editprofile').style.display = "none";
 	   		}
-			if (x != 'makesure') {
+	   		if (x != 'makesure') {
 	   			document.getElementById('makesure').style.display = "none";
 	   		}
 	  }
 
     </script>
 </head>
-  
 
 <!------------------------------function setup area--------------------------------------->
 
@@ -283,7 +220,7 @@
 				
                 echo "Information of the company:";
 				
-				echo "<table border='1'>
+				echo "<table id='companydets' border='1'>
 				<tr bgcolor='#F00' align='center' style='color:white;'>		
 				<th>Name</th>
 				<th>StreetNumber</th>
@@ -408,16 +345,16 @@
 <div id="mainbar">
     <ul>
           <li>
-            <input type="button" name="portfolio" value="Profile" onClick="showPort('profileDiv')" />
+            <input type="button" name="portfolio" value="Profile" style="font: bold 23px Arial" onClick="showPort('profileDiv')" />
           </li>
           <li>
-             <input type="button" name="posts" value="Job Postings" onClick="showPort('postingsDiv')" />
+             <input type="button" name="posts" value="Job Postings" style="font: bold 23px Arial" onClick="showPort('postingsDiv')" />
           </li>
           <li>
-            <input type="button" name="posts" value="offerspending" onClick="showPort('offerspending')" />
+            <input type="button" name="posts" value="Offers Pending" style="font: bold 23px Arial" onClick="showPort('offerspending')" />
           </li>
           <li>
-            <input type="button" name="posts" value="offersaccepted" onClick="showPort('offersaccepted')" />
+            <input type="button" name="posts" value="Offers Accepted" style="font: bold 23px Arial" onClick="showPort('offersaccepted')" />
           </li>
           
   </ul>
@@ -530,7 +467,7 @@
      style="display:none;"
      class="answer_list">
      
-       <form method="post" action="StudentInterface.php">
+       <form id="prof"  method="post" action="StudentInterface.php">
        
 <?php
 				if(isset($_POST['makenewprofile'])||isset($_POST['submitprofile'])||isset($_POST['submitinfo']))
@@ -566,7 +503,10 @@
 				}
 				
 										
-				echo '<br>Hello,'.$firstname.' '.$lastname.' <br>';
+				echo '<br><h2>Hello,'.$firstname.' '.$lastname.' </h2> <br>'; ?>
+				  <input type="button" name="edit" value="Edit Profile" onClick="showPort('editprofile')" /> <br>
+  <input type="button" name="edit" value="Edit Info" onClick="showPort('editinfo')" /> 
+<?php
 				echo '<br>Here is your information: <br>';
 				echo '<br>University: '.$uname.'<br>';
 				echo '<br>Faculty: '.$faculty.'<br>';
@@ -600,9 +540,7 @@
 			?>
             
   </form>
-            
-  <input type="button" name="edit" value="editprofile" onClick="showPort('editprofile')" />
-  <input type="button" name="edit" value="editinfo" onClick="showPort('editinfo')" />
+
 </div>
 		
  
@@ -615,9 +553,9 @@
 <div id="postingsDiv"
      style="display:none;"
      class="answer_list">
-    <form method="post" action="StudentInterface.php"> 
+    <form id = "searchbar" method="post" action="StudentInterface.php"> 
     
-     <div id = "searchbar">
+     <div>
      <?php
 	 $con=mysqli_connect('localhost','root','', 'jobpost');
 	 $companypost = mysqli_query($con,"SELECT DISTINCT c.co_id, c.Name FROM COMPANY c, JOB_POSTING p WHERE c.co_id = p.co_id;");
@@ -641,9 +579,9 @@
 			  echo '<option value= higher > higher than 3500 </option>';
 			  echo '<option value= lower>lower than 3500</option>';
 			  echo '<br></select><br>';
-			  echo 'Keyword:<br> <input type="text" name="key" value= ><br>';
+			  echo 'Keyword:<br> <input id="searchjp" type="text" name="key" value= ><br>';
 			  echo 'Show the latest post of companies with more than three posts:
-			        <br> <input type="checkbox" name="best" value= "best">
+			        <br> <input id="searchjpc" type="checkbox" name="best" value= "best">
 			        (if you select this, other search functions will not work)<br>';
 			  echo "<button input type='submit' value='Search' name='Search' >Search</button>";
 			  $result = mysqli_query($con,"SELECT * FROM JOB_POSTING");
