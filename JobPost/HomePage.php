@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <?php
-	$con = mysqli_connect("localhost", "root", "Compouter25624!", "cpsc304");
+	$con = mysqli_connect("localhost", "root", "123456", "newdb");
+	
 	if(isset($_POST['deleteconfirm'])){
 		if($_POST['deletcheck'] != 'no'){
 			mysqli_query($con, "DELETE FROM STUDENT_STUDIES WHERE STUDENT_STUDIES.s_id =" . $_POST['deleteconfirm'] );
